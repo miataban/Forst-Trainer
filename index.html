@@ -94,13 +94,13 @@
             padding: 20px 20px 34px 20px;
         }
 
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 16px;
-        }
+       .top-nav {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 16px;
+}
 
         .nav-icon {
             background: none;
@@ -193,21 +193,45 @@
             border-color: #E05A47;
         }
 
-        #next-btn {
-    display: none;
-    margin-top: 18px;
-    width: 100%;
-    height: 52px;
-    background: rgba(59, 130, 86, 0.85);
-    border: 1px solid rgba(74, 222, 128, 0.45);
-    border-radius: 14px;
-    color: #F2F5F3;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
+        .result-box {
+            display: none;
+            text-align: center;
+            background: rgba(24, 38, 29, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(74, 222, 128, 0.45);
+            border-radius: 16px;
+            padding: 24px 20px;
+            margin-bottom: 18px;
+            box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.5);
+        }
 
+        .result-score {
+            font-size: 40px;
+            font-weight: 700;
+            color: #4ADE80;
+            margin: 8px 0;
+        }
+
+        .result-sub {
+            color: #9CA8A1;
+            font-size: 14px;
+        }
+
+        #next-btn {
+            display: none;
+            margin-top: 18px;
+            width: 100%;
+            height: 52px;
+            background: rgba(59, 130, 86, 0.85);
+            border: 1px solid rgba(74, 222, 128, 0.45);
+            border-radius: 14px;
+            color: #F2F5F3;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
         }
 
         /* --- ANIMAȚII --- */
@@ -247,7 +271,6 @@
     <!-- ECRAN 2: QUIZ -->
     <div id="quiz-screen">
         <div class="top-nav">
-            <button id="back-btn" class="nav-icon"></button>
             <button id="close-btn" class="nav-icon">✕</button>
         </div>
 
@@ -262,6 +285,12 @@
             <div id="q-text" class="question-text animate-smooth delay-2"></div>
 
             <div id="q-options" class="options-container animate-smooth delay-3"></div>
+
+            <div id="result-box" class="result-box">
+                <div>Ergebnis</div>
+                <div id="result-percent" class="result-score">0%</div>
+                <div id="result-detail" class="result-sub"></div>
+            </div>
 
             <button id="next-btn">Nächste Frage</button>
         </div>
@@ -300,13 +329,11 @@
                     { text: "Birke", correct: false }
                 ]
             },
-
-{
+            {
                 title: "3. Cookie ist in Pookie verliebt?",
                 image: "https://www.shutterstock.com/image-illustration/cartoon-illustration-cute-little-shy-600w-337706201.jpg",
                 paragraphs: [
-                    "Sag ehrlich",
-                    
+                    "Sag ehrlich"
                 ],
                 options: [
                     { text: "nein", correct: false },
@@ -315,7 +342,6 @@
                     { text: "Ohhhh jaaa 🍑🫦", correct: true }
                 ]
             },
-
             {
                 title: "4. Was muss anstelle von “...” stehen?",
                 image: "https://survival-kompass.de/img/artikel/linde-knospe.jpg",
@@ -323,7 +349,7 @@
                     "Rot, rund und ein bisschen schief.",
                     "Die ...knospe ist anders als die anderen. Rundlich statt spitz. Und oft ein bisschen asymmetrisch – als würde sie sich leicht zur Seite neigen.",
                     "Was sie besonders macht: Die Farbe. Die meisten ...knospen sind rötlich bis dunkelrot. Das fällt auf zwischen all dem Braun und Grau des Winters.",
-                    "Zwei bis drei sichtbare Knospenschuppen. Das ist wenig. Bei der Buche zum Beispiel siehst du deutlich mehr Schuppen.",
+                    "Zwei bis drei sichtbare Knospenschuppen. Das ist wenig. Bei der Buche zum Beispiel siehst du deutlich mehr Schuppen."
                 ],
                 options: [
                     { text: "Spitzahorn", correct: false },
@@ -332,14 +358,13 @@
                     { text: "Eiche", correct: false }
                 ]
             },
-
             {
                 title: "5. Was muss anstelle von “...” stehen?",
                 image: "https://survival-kompass.de/img/artikel/spitzahorn-knospe.jpg",
                 paragraphs: [
                     "Paarweise am Zweig.",
                     "Beim ... musst du auf die Anordnung schauen.",
-                    "Die Knospen sitzen gegenständig. Das heißt: Immer zwei auf gleicher Höhe, links und rechts am Zweig. Wie zwei Ohren. Die Knospen selbst sind dick und eiförmig. Oft dunkelrot gefärbt, manchmal auch grünlich-braun. Aber das Entscheidende ist diese paarweise Anordnung.",
+                    "Die Knospen sitzen gegenständig. Das heißt: Immer zwei auf gleicher Höhe, links und rechts am Zweig. Wie zwei Ohren. Die Knospen selbst sind dick und eiförmig. Oft dunkelrot gefärbt, manchmal auch grünlich-braun. Aber das Entscheidende ist diese paarweise Anordnung."
                 ],
                 options: [
                     { text: "Spitzahorn", correct: true },
@@ -348,19 +373,27 @@
                     { text: "Eiche", correct: false }
                 ]
             }
-
         ];
 
         let currentIndex = 0;
+        let correctCount = 0;
+        let answered = false;
 
         const startScreen = document.getElementById('start-screen');
         const quizScreen = document.getElementById('quiz-screen');
         const startBtn = document.getElementById('start-btn');
-        const backBtn = document.getElementById('back-btn');
         const closeBtn = document.getElementById('close-btn');
         const nextBtn = document.getElementById('next-btn');
+        const resultBox = document.getElementById('result-box');
 
         function renderQuestion(index) {
+            answered = false;
+            resultBox.style.display = "none";
+            document.querySelector('.quiz-header').style.display = "block";
+            document.getElementById('q-image').style.display = "block";
+            document.getElementById('q-text').style.display = "block";
+            document.getElementById('q-options').style.display = "flex";
+
             const q = questions[index];
             document.getElementById('q-title').textContent = q.title;
             document.getElementById('q-image').src = q.image;
@@ -383,6 +416,7 @@
 
         startBtn.addEventListener('click', function() {
             currentIndex = 0;
+            correctCount = 0;
             startScreen.style.display = 'none';
             quizScreen.style.display = 'flex';
             renderQuestion(currentIndex);
@@ -392,38 +426,59 @@
             quizScreen.style.display = 'none';
             startScreen.style.display = 'flex';
             nextBtn.style.display = 'none';
+            resultBox.style.display = 'none';
         }
 
-        backBtn.addEventListener('click', goHome);
+
+
         closeBtn.addEventListener('click', goHome);
 
         function checkAnswer(button, isCorrect) {
-            document.querySelectorAll('.option-btn').forEach(btn => {
-                btn.classList.remove('correct', 'wrong');
-            });
+            if (answered) return;
+            answered = true;
 
             if (isCorrect) {
+                correctCount++;
                 button.classList.add('correct');
             } else {
                 button.classList.add('wrong');
             }
 
-            // Afișăm butonul de trecere la întrebarea următoare dacă mai există
             if (currentIndex < questions.length - 1) {
                 nextBtn.textContent = "Nächste Frage";
-                nextBtn.style.display = "flex";
             } else {
-                nextBtn.textContent = "Zurück zum Start";
-                nextBtn.style.display = "flex";
+                nextBtn.textContent = "Auswertung anzeigen";
             }
+            nextBtn.style.display = "flex";
+        }
+
+        function showFinalResult() {
+            document.querySelector('.quiz-header').style.display = "none";
+            document.getElementById('q-image').style.display = "none";
+            document.getElementById('q-text').style.display = "none";
+            document.getElementById('q-options').style.display = "none";
+
+            const percent = Math.round((correctCount / questions.length) * 100);
+            document.getElementById('result-percent').textContent = percent + "%";
+            document.getElementById('result-detail').textContent =
+                `${correctCount} von ${questions.length} Fragen richtig beantwortet`;
+
+            resultBox.style.display = "block";
+            nextBtn.textContent = "Zurück zum Start";
+            nextBtn.style.display = "flex";
         }
 
         nextBtn.addEventListener('click', function() {
+            if (nextBtn.textContent === "Zurück zum Start") {
+                goHome();
+                return;
+            }
+
             if (currentIndex < questions.length - 1) {
                 currentIndex++;
                 renderQuestion(currentIndex);
             } else {
-                goHome();
+                showFinalResult();
             }
         });
     </script>
