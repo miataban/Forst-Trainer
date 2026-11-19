@@ -32,16 +32,16 @@
         }
 
         /* --- ECRAN 1: START --- */
-       #start-screen {
-    width: 100%;
-    max-width: 420px;
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding: 36px 20px calc(24px + env(safe-area-inset-bottom)) 20px;
-}
+        #start-screen {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 36px 20px calc(24px + env(safe-area-inset-bottom)) 20px;
+        }
 
         .content-container {
             display: flex;
@@ -91,13 +91,19 @@
         }
 
         /* --- ECRAN 2: QUIZ --- */
-       #quiz-screen {
+        #quiz-screen {
     display: none;
     width: 100%;
     max-width: 420px;
     min-height: 100svh;
     flex-direction: column;
     padding: 12px 20px calc(22px + env(safe-area-inset-bottom)) 20px;
+}
+
+#question-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
         .top-nav {
@@ -141,14 +147,16 @@
         }
 
         .question-image {
-            width: 100%;
-            height: 155px;
-            object-fit: cover;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.6);
-            margin-bottom: 12px;
-        }
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 155px;
+    max-height: 300px;
+    object-fit: contain;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: 12px;
+}
 
         .question-text {
             text-align: center;
@@ -225,20 +233,20 @@
         }
 
         #next-btn {
-    display: none;
-    margin-top: 12px;
-    width: 100%;
-    height: 48px;
-    background: rgba(59, 130, 86, 0.85);
-    border: 1px solid rgba(74, 222, 128, 0.45);
-    border-radius: 14px;
-    color: #F2F5F3;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-}
+            display: none;
+            margin-top: 12px;
+            width: 100%;
+            height: 48px;
+            background: rgba(59, 130, 86, 0.85);
+            border: 1px solid rgba(74, 222, 128, 0.45);
+            border-radius: 14px;
+            color: #F2F5F3;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
 
         /* --- ANIMAȚII --- */
         @keyframes fadeInUp {
@@ -376,21 +384,6 @@
                     { text: "Rotbuche", correct: false },
                     { text: "Linde", correct: false },
                     { text: "Eiche", correct: false }
-                ]
-            },
-            {
-                title: "6. Was muss anstelle von “...” stehen?",
-                image: "https://survival-kompass.de/img/artikel/birke-knospe.jpg",
-                paragraphs: [
-                    "Klein, spitz und leicht abgespreizt.",
-                    "Die ...knospe ist zierlich, hellbraun bis rötlich-braun und sitzt oft etwas schräg am dünnen, kahlen Trieb.",
-                    "Anders als bei dicken Winterknospen wirkt sie fast ein wenig spitz-eiförmig und unscheinbar – passt aber genau zu den feinen Zweigen."
-                ],
-                options: [
-                    { text: "Birke", correct: true },
-                    { text: "Rotbuche", correct: false },
-                    { text: "Eiche", correct: false },
-                    { text: "Linde", correct: false }
                 ]
             }
         ];
