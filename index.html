@@ -42,7 +42,87 @@
             align-items: center;
             padding: 36px 20px calc(24px + env(safe-area-inset-bottom)) 20px;
         }
+#category-screen,
+        #baumarten-screen {
+            display: none;
+            width: 100%;
+            max-width: 420px;
+            min-height: 100svh;
+            flex-direction: column;
+            padding: 16px 20px calc(24px + env(safe-area-inset-bottom)) 20px;
+        }
 
+        .screen-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #F2F5F3;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 6px 10px;
+            opacity: 0.85;
+        }
+
+        .screen-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .screen-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .screen-header p {
+            color: #9CA8A1;
+            font-size: 14px;
+        }
+
+        .section-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #F2F5F3;
+            text-align: center;
+            margin: 14px 0 10px;
+        }
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu-btn {
+            width: 100%;
+            min-height: 50px;
+            background: rgba(18, 24, 20, 0.78);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            color: #F2F5F3;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 12px 16px;
+            transition: transform 0.15s ease, border-color 0.2s ease;
+        }
+
+        .menu-btn:active {
+            transform: scale(0.98);
+        }
+
+        .menu-btn.disabled-soon {
+            opacity: 0.45;
+            cursor: default;
+        }
         .content-container {
             display: flex;
             flex-direction: column;
@@ -281,7 +361,56 @@
 
         <button id="start-btn" class="btn-primary animate-smooth delay-2">Quiz starten</button>
     </div>
+<!-- ECRAN 1B: KATEGORIEN -->
+    <div id="category-screen">
+        <div class="screen-top">
+            <button id="cat-back-btn" class="back-btn" aria-label="Zurück"><</button>
+            <span style="width: 34px;"></span>
+        </div>
 
+        <div class="screen-header">
+            <h2>Forst-Trainer</h2>
+            <p>Ausbildung Wolfenbüttel</p>
+        </div>
+
+        <div class="menu-list">
+            <button id="open-baumarten-btn" class="menu-btn">Baumarten & Bestimmung</button>
+            <button id="start-sicherheit-btn" class="menu-btn">Arbeitssicherheit (UVV & PSA)</button>
+            <button class="menu-btn disabled-soon" disabled>Werkzeuge & Forsttechnik (bald)</button>
+            <button class="menu-btn disabled-soon" disabled>Aufgaben im Revier (bald)</button>
+            <button class="menu-btn disabled-soon" disabled>Bodenkunde und Standortlehre (bald)</button>
+            <div class="section-label">Sonstiges</div>
+            <button id="start-fun-btn" class="menu-btn">Fun Facts</button>
+            <button id="start-all-btn" class="menu-btn">Zufällig (Alle)</button>
+        </div>
+    </div>
+
+    <!-- ECRAN 1C: BAUMARTEN & BESTIMMUNG -->
+    <div id="baumarten-screen">
+        <div class="screen-top">
+            <button id="baum-back-btn" class="back-btn" aria-label="Zurück"><</button>
+            <span style="width: 34px;"></span>
+        </div>
+
+        <div class="screen-header">
+            <h2>Forst-Trainer</h2>
+            <p>Baumarten & Bestimmung</p>
+        </div>
+
+        <div class="section-label">Baumgruppen</div>
+        <div class="menu-list">
+            <button class="menu-btn" data-filter="laubbäume">Laubbäume</button>
+            <button class="menu-btn" data-filter="nadelbäume">Nadelbäume</button>
+            <button class="menu-btn" data-filter="alle-baumarten">Alle Baumarten</button>
+        </div>
+
+        <div class="section-label">Erkennungsmerkmale</div>
+        <div class="menu-list">
+            <button class="menu-btn" data-filter="knospen">Knospen & Zweige</button>
+            <button class="menu-btn" data-filter="standort">Standort & Wolfenbüttel</button>
+            <button class="menu-btn" data-filter="alle-baumarten">Zufällig (Baumarten)</button>
+        </div>
+    </div>
     <!-- ECRAN 2: QUIZ -->
     <div id="quiz-screen">
         <div class="top-nav">
@@ -290,8 +419,8 @@
 
         <div id="question-wrapper">
             <div class="quiz-header animate-smooth delay-1">
+                <div id="q-progress" style="color: #9CA8A1; font-size: 13px; font-weight: 600; margin-bottom: 4px;"></div>
                 <h2 id="q-title"></h2>
-                <span>Wähle die richtige Antwort</span>
             </div>
 
             <img id="q-image" src="" alt="Knospen" class="question-image animate-smooth delay-2">
@@ -313,6 +442,8 @@
     <script>
         const questions = [
             {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
                 title: "Was muss anstelle von “...” stehen?",
                 image: "https://survival-kompass.de/img/artikel/eiche-knospe.jpg",
                 paragraphs: [
@@ -328,6 +459,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
                 title: "Was muss anstelle von “...” stehen?",
                 image: "https://thumbs.dreamstime.com/b/knospen-von-buche-oder-fagus-sylvatica-216086096.jpg?w=576",
                 paragraphs: [
@@ -343,6 +476,8 @@
                 ]
             },
             {
+                category: "fun",
+                subCategory: "fun",
                 title: "Cookie ist in Pookie verliebt?",
                 image: "https://www.shutterstock.com/image-illustration/cartoon-illustration-cute-little-shy-600w-337706201.jpg",
                 paragraphs: [
@@ -356,6 +491,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
                 title: "Was muss anstelle von “...” stehen?",
                 image: "https://survival-kompass.de/img/artikel/linde-knospe.jpg",
                 paragraphs: [
@@ -372,6 +509,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
                 title: "Was muss anstelle von “...” stehen?",
                 image: "https://survival-kompass.de/img/artikel/spitzahorn-knospe.jpg",
                 paragraphs: [
@@ -387,6 +526,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
                 title: "Was muss anstelle von “...” stehen?",
                 image: "https://survival-kompass.de/img/artikel/birke-knospe.jpg",
                 paragraphs: [
@@ -402,6 +543,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: "nadelbäume",
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/Tanne.jpg",
                 paragraphs: [
@@ -418,6 +561,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: "nadelbäume",
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/Fichte.jpg",
                 paragraphs: [
@@ -433,6 +578,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: "nadelbäume",
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/Kiefer.jpg",
                 paragraphs: [
@@ -448,6 +595,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: "nadelbäume",
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/Eibe.jpg",
                 paragraphs: [
@@ -463,6 +612,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: "nadelbäume",
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/Douglasie.jpg",
                 paragraphs: [
@@ -478,6 +629,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: "standort",
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/eibe-wolfenbuettel.jpg",
                 paragraphs: [
@@ -492,6 +645,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: "standort",
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/fichte-wolfenbuettel.jpg",
                 paragraphs: [
@@ -506,6 +661,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: "standort",
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/kiefer-wolfenbuettel.jpg",
                 paragraphs: [
@@ -520,6 +677,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: "standort",
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/laerche-wolfenbuettel.jpg",
                 paragraphs: [
@@ -534,6 +693,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: "standort",
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/douglasie-wolfenbuettel.jpg",
                 paragraphs: [
@@ -548,6 +709,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: "nadelbäume",
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/douglasie-essbare-triebspitzen.jpg",
                 paragraphs: [
@@ -562,6 +725,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/Buche-ohne.png",
                 paragraphs: [
@@ -577,6 +742,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/Eiche-ohne.png",
                 paragraphs: [
@@ -592,6 +759,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/Bergahorn-ohne.png",
                 paragraphs: [
@@ -607,6 +776,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/Esche-ohne.png",
                 paragraphs: [
@@ -621,6 +792,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/Feldahorn-ohne.png",
                 paragraphs: [
@@ -635,6 +808,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/Hainbuche-ohne.png",
                 paragraphs: [
@@ -649,6 +824,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/Pappel-ohne.png",
                 paragraphs: [
@@ -663,6 +840,8 @@
                 ]
             },
             {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
                 title: "Was muss anstelle von “...” stehen?",
                 image: "img/Rosskastanie-ohne.png",
                 paragraphs: [
@@ -677,6 +856,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "UVV Forst: Hänger",
                 image: "",
                 paragraphs: [
@@ -689,6 +870,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "UVV Forst: Hänger",
                 image: "",
                 paragraphs: [
@@ -701,6 +884,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "psa",
                 title: "PSA an der Motorsäge",
                 image: "",
                 paragraphs: [
@@ -713,6 +898,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "psa",
                 title: "PSA an der Motorsäge",
                 image: "",
                 paragraphs: [
@@ -725,6 +912,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Spannungsholz im Revier",
                 image: "",
                 paragraphs: [
@@ -737,6 +926,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Spannungsholz im Revier",
                 image: "",
                 paragraphs: [
@@ -749,6 +940,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Sicherheitsabstand",
                 image: "",
                 paragraphs: [
@@ -761,6 +954,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Sicherheitsabstand",
                 image: "",
                 paragraphs: [
@@ -773,6 +968,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Spaziergänger am Arbeitsbereich",
                 image: "",
                 paragraphs: [
@@ -785,6 +982,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Spaziergänger im Gefahrenbereich",
                 image: "",
                 paragraphs: [
@@ -797,6 +996,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Motorsäge betanken: Sicherheit",
                 image: "",
                 paragraphs: [
@@ -809,6 +1010,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Motorsäge betanken: Sicherheit",
                 image: "",
                 paragraphs: [
@@ -821,6 +1024,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Motorsäge betanken: Sicherheit",
                 image: "",
                 paragraphs: [
@@ -833,6 +1038,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Rettungskonzept Forstamt Wolfenbüttel",
                 image: "",
                 paragraphs: [
@@ -845,6 +1052,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Rettungskonzept Forstamt Wolfenbüttel",
                 image: "",
                 paragraphs: [
@@ -857,6 +1066,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Rettungskonzept Forstamt Wolfenbüttel",
                 image: "",
                 paragraphs: [
@@ -869,6 +1080,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Seilwinde am Forstschlepper",
                 image: "",
                 paragraphs: [
@@ -881,6 +1094,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Seilwinde am Forstschlepper",
                 image: "",
                 paragraphs: [
@@ -893,6 +1108,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Seilwinde am Forstschlepper",
                 image: "",
                 paragraphs: [
@@ -905,6 +1122,8 @@
                 ]
             },
             {
+                category: "sicherheit",
+                subCategory: "uvv",
                 title: "Sicherheitsabstand bei der Holzernte",
                 image: "",
                 paragraphs: [
@@ -916,7 +1135,6 @@
                     { text: "Falsch", correct: true }
                 ]
             }
-
         ];
 
         function shuffleArray(array) {
@@ -940,7 +1158,14 @@
         const nextBtn = document.getElementById('next-btn');
         const resultBox = document.getElementById('result-box');
 
-       function renderQuestion(index) {
+       // 2. GOES IN <script>, RIGHT ABOVE function renderQuestion(index)
+        function isTrueFalseOptions(options) {
+            if (!Array.isArray(options) || options.length !== 2) return false;
+            const texts = options.map(o => o.text.trim().toLowerCase());
+            return texts.includes("richtig") && texts.includes("falsch");
+        }
+
+        function renderQuestion(index) {
             answered = false;
             resultBox.style.display = "none";
             document.querySelector('.quiz-header').style.display = "block";
@@ -948,6 +1173,7 @@
             document.getElementById('q-options').style.display = "grid";
 
             const q = activeQuestions[index];
+            document.getElementById('q-progress').textContent = `Frage ${index + 1} von ${activeQuestions.length}`;
             document.getElementById('q-title').textContent = q.title;
 
             const imgEl = document.getElementById('q-image');
@@ -966,8 +1192,14 @@
             optionsContainer.innerHTML = "";
             nextBtn.style.display = "none";
 
-            const shuffledOptions = shuffleArray(q.options);
-            shuffledOptions.forEach(opt => {
+            const orderedOptions = isTrueFalseOptions(q.options)
+                ? [
+                    q.options.find(o => o.text.trim().toLowerCase() === "richtig"),
+                    q.options.find(o => o.text.trim().toLowerCase() === "falsch")
+                ]
+                : shuffleArray(q.options);
+
+            orderedOptions.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = "option-btn";
                 btn.textContent = opt.text;
@@ -976,13 +1208,102 @@
             });
         }
 
-        startBtn.addEventListener('click', function() {
-            activeQuestions = shuffleArray(questions);
+      const categoryScreen = document.getElementById('category-screen');
+        const baumartenScreen = document.getElementById('baumarten-screen');
+        let categoryListenersAttached = false;
+
+        function showScreen(targetScreen) {
+            startScreen.style.display = 'none';
+            if (categoryScreen) categoryScreen.style.display = 'none';
+            if (baumartenScreen) baumartenScreen.style.display = 'none';
+            quizScreen.style.display = 'none';
+            targetScreen.style.display = 'flex';
+        }
+
+        function startFilteredQuiz(predicate) {
+            const pool = questions.filter(predicate);
+            activeQuestions = shuffleArray(pool.length > 0 ? pool : questions);
             currentIndex = 0;
             correctCount = 0;
-            startScreen.style.display = 'none';
-            quizScreen.style.display = 'flex';
+            nextBtn.style.display = 'none';
+            resultBox.style.display = 'none';
+            showScreen(quizScreen);
             renderQuestion(currentIndex);
+        }
+
+       function matchesSubCategory(question, filter) {
+            if (Array.isArray(question.subCategory)) {
+                return question.subCategory.includes(filter);
+            }
+            return question.subCategory === filter;
+        }
+
+        function setupCategoryNavigation() {
+            if (categoryListenersAttached) return;
+            categoryListenersAttached = true;
+
+            const catBackBtn = document.getElementById('cat-back-btn');
+            const openBaumartenBtn = document.getElementById('open-baumarten-btn');
+            const baumBackBtn = document.getElementById('baum-back-btn');
+            const startSicherheitBtn = document.getElementById('start-sicherheit-btn');
+            const startFunBtn = document.getElementById('start-fun-btn');
+            const startAllBtn = document.getElementById('start-all-btn');
+
+            if (catBackBtn) {
+                catBackBtn.addEventListener('click', function() {
+                    showScreen(startScreen);
+                });
+            }
+
+            if (openBaumartenBtn && baumartenScreen) {
+                openBaumartenBtn.addEventListener('click', function() {
+                    showScreen(baumartenScreen);
+                });
+            }
+
+            if (baumBackBtn && categoryScreen) {
+                baumBackBtn.addEventListener('click', function() {
+                    showScreen(categoryScreen);
+                });
+            }
+
+            if (startSicherheitBtn) {
+                startSicherheitBtn.addEventListener('click', function() {
+                    startFilteredQuiz(q => q.category === 'sicherheit');
+                });
+            }
+
+            if (startFunBtn) {
+                startFunBtn.addEventListener('click', function() {
+                    startFilteredQuiz(q => q.category === 'fun');
+                });
+            }
+
+            if (startAllBtn) {
+                startAllBtn.addEventListener('click', function() {
+                    startFilteredQuiz(() => true);
+                });
+            }
+
+            document.querySelectorAll('#baumarten-screen .menu-btn[data-filter]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const filter = btn.getAttribute('data-filter');
+                    if (filter === 'alle-baumarten') {
+                        startFilteredQuiz(q => q.category === 'baumarten');
+                    } else {
+                        startFilteredQuiz(q => q.category === 'baumarten' && matchesSubCategory(q, filter));
+                    }
+                });
+            });
+        }
+
+        startBtn.addEventListener('click', function() {
+            setupCategoryNavigation();
+            if (categoryScreen) {
+                showScreen(categoryScreen);
+            } else {
+                startFilteredQuiz(() => true);
+            }
         });
 
         function goHome() {
