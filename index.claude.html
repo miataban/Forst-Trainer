@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forst-Trainer</title>
+    <meta name="theme-color" content="#111613">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            background-color: #111613;
+        }
+
+        body {
+            background-color: #111613;
+            background-image: linear-gradient(rgba(17, 22, 19, 0.72), rgba(17, 22, 19, 0.85)), url("img/background.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+            background-attachment: scroll;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #F2F5F3;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- ECRAN 1: START --- */
+        #start-screen {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 36px 20px calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom)) 20px;
+        }
+#category-screen,
+        #baumarten-screen {
+            display: none;
+            width: 100%;
+            max-width: 420px;
+            min-height: 100svh;
+            flex-direction: column;
+            padding: 16px 20px calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom)) 20px;
+        }
+
+        .screen-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #F2F5F3;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 6px 10px;
+            opacity: 0.85;
+        }
+
+        .screen-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .screen-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .screen-header p {
+            color: #9CA8A1;
+            font-size: 14px;
+        }
+
+        .section-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #F2F5F3;
+            text-align: center;
+            margin: 14px 0 10px;
+        }
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu-btn {
+            width: 100%;
+            min-height: 50px;
+            background: rgba(18, 24, 20, 0.78);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            color: #F2F5F3;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 12px 16px;
+            transition: transform 0.15s ease, border-color 0.2s ease;
+        }
+
+        .menu-btn:active {
+            transform: scale(0.98);
+        }
+
+        .menu-btn.disabled-soon {
+            opacity: 0.45;
+            cursor: default;
+        }
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .subtitle {
+            color: #9CA8A1;
+            font-size: 15px;
+            text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .btn-primary {
+            width: 100%;
+            max-width: 353px;
+            height: 54px;
+            background: linear-gradient(180deg, rgba(68, 145, 97, 0.45) 0%, rgba(50, 112, 74, 0.45) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            color: #F2F5F3;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            box-shadow: 0px 8px 20px rgba(9, 13, 11, 0.50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        /* --- ECRAN 2: QUIZ --- */
+        #quiz-screen {
+            display: none;
+            width: 100%;
+            max-width: 420px;
+            min-height: 100svh;
+            flex-direction: column;
+            padding: 12px 20px calc(22px + env(safe-area-inset-bottom)) 20px;
+        }
+
+        #question-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .nav-icon {
+            background: none;
+            border: none;
+            color: #F2F5F3;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 8px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .nav-icon:hover {
+            opacity: 1;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .quiz-header h2 {
+            font-size: 23px;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 6px;
+        }
+
+        .quiz-header span {
+            color: #9CA8A1;
+            font-size: 13px;
+        }
+
+        .question-image {
+            width: 100%;
+            flex: 1 1 auto;
+            min-height: 155px;
+            max-height: 300px;
+            object-fit: contain;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            text-align: center;
+            font-size: 13.5px;
+            line-height: 1.45;
+            color: #E2E8E4;
+            margin-bottom: 14px;
+        }
+
+        .question-text p {
+            margin-bottom: 6px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .option-btn {
+            width: 100%;
+            min-height: 52px;
+            background: rgba(24, 38, 29, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            color: #F2F5F3;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+
+        .option-btn.correct {
+            background: rgba(27, 36, 31, 0.9);
+            border-color: #4ADE80;
+        }
+
+        .option-btn.wrong {
+            background: rgba(180, 55, 45, 0.8);
+            border-color: #E05A47;
+        }
+
+        .result-box {
+            display: none;
+            text-align: center;
+            background: rgba(24, 38, 29, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(74, 222, 128, 0.45);
+            border-radius: 16px;
+            padding: 24px 20px;
+            margin-bottom: 18px;
+            box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .result-score {
+            font-size: 40px;
+            font-weight: 700;
+            color: #4ADE80;
+            margin: 8px 0;
+        }
+
+        .result-sub {
+            color: #9CA8A1;
+            font-size: 14px;
+        }
+
+        #next-btn {
+            display: none;
+            margin-top: 12px;
+            width: 100%;
+            height: 48px;
+            background: rgba(59, 130, 86, 0.85);
+            border: 1px solid rgba(74, 222, 128, 0.45);
+            border-radius: 14px;
+            color: #F2F5F3;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- ANIMAȚII --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-smooth {
+            opacity: 0;
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .delay-1 { animation-delay: 0.05s; }
+        .delay-2 { animation-delay: 0.15s; }
+        .delay-3 { animation-delay: 0.25s; }
+
+        .image-options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: auto;
+            width: 100%;
+        }
+
+      .image-option-btn {
+            background: rgba(24, 38, 29, 0.78);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            padding: 5px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            max-height: 145px;
+            transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-option-btn:active {
+            transform: scale(0.98);
+        }
+
+        .image-option-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .image-option-btn.correct {
+            background: rgba(27, 36, 31, 0.92);
+            border-color: #4ADE80;
+            box-shadow: 0 0 0 1px #4ADE80;
+        }
+
+        .image-option-btn.wrong {
+            background: rgba(180, 55, 45, 0.85);
+            border-color: #E05A47;
+            box-shadow: 0 0 0 1px #E05A47;
+        }
+
+       @media (min-width: 640px) {
+            #start-screen,
+            #category-screen,
+            #baumarten-screen,
+            #quiz-screen {
+                max-width: 640px;
+            }
+
+            .question-image {
+                max-height: 360px;
+            }
+
+            .image-options-grid {
+                max-width: 560px;
+                margin-left: auto;
+                margin-right: auto;
+                gap: 14px;
+            }
+
+            .image-option-btn {
+                padding: 8px;
+                aspect-ratio: 4 / 3;
+                max-height: 210px;
+            }
+        }
+
+        /* ===================================================
+           TAB-LEISTE (FOOTER)
+           Das SVG ist 393 x 84 groß, die Leiste skaliert mit der Breite.
+           =================================================== */
+        :root {
+            --app-w: min(100vw, 420px);
+            --tabbar-h: calc(var(--app-w) * 84 / 393);
+        }
+
+        .tabbar {
+            position: fixed;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: var(--app-w);
+            z-index: 50;
+        }
+
+        .tabbar-art {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 393 / 84;
+        }
+
+        .tabbar-art img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .tabbar-art img[hidden] {
+            display: none;
+        }
+
+        /* fünf gleich breite, unsichtbare Tippflächen über dem SVG */
+        .tabbar-links {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .tabbar-links a {
+            display: block;
+            border-radius: 12px;
+            color: inherit;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .tabbar-links a:focus-visible {
+            outline: 2px solid #6B9C7C;
+            outline-offset: -6px;
+        }
+
+        /* Platz unter der Leiste (iPhone Home-Indikator) */
+        .tabbar::after {
+            content: "";
+            display: block;
+            height: env(safe-area-inset-bottom);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Beschriftung nur für Screenreader (im SVG ist sie schon sichtbar) */
+        .tab-label {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+
+        /* Notfall: wenn die SVG-Dateien nicht gefunden werden, zeigen wir einfache Text-Tabs */
+        .tabbar.no-art .tabbar-art {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #2A362F;
+        }
+
+        .tabbar.no-art .tab-label {
+            position: static;
+            width: auto;
+            height: auto;
+            overflow: visible;
+            clip-path: none;
+        }
+
+        .tabbar.no-art .tabbar-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #9CA8A1;
+        }
+
+        .tabbar.no-art .tabbar-links a[aria-current="page"] {
+            color: #F2F5F3;
+            font-weight: 700;
+        }
+
+        /* Im Quiz blenden wir die Leiste aus: mehr Platz, kein versehentliches Verlassen */
+        body.in-quiz .tabbar {
+            display: none;
+        }
+
+        /* ===================================================
+           PLATZHALTER-SEITEN (Start, Übung, Wissen, Profil)
+           =================================================== */
+        .tab-placeholder {
+            display: none;
+            width: 100%;
+            max-width: 420px;
+            min-height: 100svh;
+            flex-direction: column;
+            padding: 36px 20px calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom)) 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SEITE: START (noch nicht gebaut) -->
+    <div id="page-start" class="tab-placeholder">
+        <!-- TODO: Startseite (Titel, Zitat, Buttons Fachwissen / Prüfungsmodus) -->
+        <div class="content-container">
+            <h1>Start</h1>
+            <p class="subtitle">Kommt bald</p>
+        </div>
+    </div>
+
+    <!-- SEITE: ÜBUNG (noch nicht gebaut) -->
+    <div id="page-uebung" class="tab-placeholder">
+        <!-- TODO: Übungsseite -->
+        <div class="content-container">
+            <h1>Übung</h1>
+            <p class="subtitle">Kommt bald</p>
+        </div>
+    </div>
+
+    <!-- SEITE: WISSEN (noch nicht gebaut) -->
+    <div id="page-wissen" class="tab-placeholder">
+        <!-- TODO: Wissensseite (Fachwissen lesen) -->
+        <div class="content-container">
+            <h1>Wissen</h1>
+            <p class="subtitle">Kommt bald</p>
+        </div>
+    </div>
+
+    <!-- SEITE: PROFIL (noch nicht gebaut) -->
+    <div id="page-profil" class="tab-placeholder">
+        <!-- TODO: Profilseite -->
+        <div class="content-container">
+            <h1>Profil</h1>
+            <p class="subtitle">Kommt bald</p>
+        </div>
+    </div>
+
+
+    <!-- ECRAN 1: PAGINA DE START -->
+    <div id="start-screen">
+        <div class="content-container">
+            <h1 class="animate-smooth delay-1">Forst-Trainer</h1>
+            <p class="subtitle animate-smooth delay-2">Ausbildung Wolfenbüttel</p>
+        </div>
+
+        <button id="start-btn" class="btn-primary animate-smooth delay-2">Quiz starten</button>
+    </div>
+<!-- ECRAN 1B: KATEGORIEN -->
+    <div id="category-screen">
+        <div class="screen-top">
+            <button id="cat-back-btn" class="back-btn" aria-label="Zurück">&lt;</button>
+            <span style="width: 34px;"></span>
+        </div>
+
+        <div class="screen-header">
+            <h2>Forst-Trainer</h2>
+            <p>Ausbildung Wolfenbüttel</p>
+        </div>
+
+        <div class="menu-list">
+            <button id="open-baumarten-btn" class="menu-btn">Baumarten & Bestimmung</button>
+            <button id="start-sicherheit-btn" class="menu-btn">Arbeitssicherheit (UVV & PSA)</button>
+            <button class="menu-btn disabled-soon" disabled>Werkzeuge & Forsttechnik (bald)</button>
+            <button class="menu-btn disabled-soon" disabled>Aufgaben im Revier (bald)</button>
+            <button class="menu-btn disabled-soon" disabled>Bodenkunde und Standortlehre (bald)</button>
+            <div class="section-label">Sonstiges</div>
+            <button id="start-fun-btn" class="menu-btn">Fun Facts</button>
+            <button id="start-all-btn" class="menu-btn">Zufällig (Alle)</button>
+        </div>
+    </div>
+
+    <!-- ECRAN 1C: BAUMARTEN & BESTIMMUNG -->
+    <div id="baumarten-screen">
+        <div class="screen-top">
+            <button id="baum-back-btn" class="back-btn" aria-label="Zurück">&lt;</button>
+            <span style="width: 34px;"></span>
+        </div>
+
+        <div class="screen-header">
+            <h2>Forst-Trainer</h2>
+            <p>Baumarten & Bestimmung</p>
+        </div>
+
+        <div class="section-label">Baumgruppen</div>
+        <div class="menu-list">
+            <button class="menu-btn" data-filter="laubbäume">Laubbäume</button>
+            <button class="menu-btn" data-filter="nadelbäume">Nadelbäume</button>
+            <button class="menu-btn" data-filter="alle-baumarten">Alle Baumarten</button>
+        </div>
+
+        <div class="section-label">Erkennungsmerkmale</div>
+        <div class="menu-list">
+            <button class="menu-btn" data-filter="knospen">Knospen & Zweige</button>
+            <button class="menu-btn" data-filter="standort">Standort & Wolfenbüttel</button>
+            <button class="menu-btn" data-filter="alle-baumarten">Zufällig (Baumarten)</button>
+        </div>
+    </div>
+    <!-- ECRAN 2: QUIZ -->
+    <div id="quiz-screen">
+        <div class="top-nav">
+            <button id="close-btn" class="nav-icon">✕</button>
+        </div>
+
+        <div id="question-wrapper">
+            <div class="quiz-header animate-smooth delay-1">
+                <div id="q-progress" style="color: #9CA8A1; font-size: 13px; font-weight: 600; margin-bottom: 4px;"></div>
+                <h2 id="q-title"></h2>
+            </div>
+
+            <img id="q-image" src="" alt="Knospen" class="question-image animate-smooth delay-2">
+
+            <div id="q-text" class="question-text animate-smooth delay-2"></div>
+
+            <div id="q-options" class="options-container animate-smooth delay-3"></div>
+
+            <div id="result-box" class="result-box">
+                <div>Ergebnis</div>
+                <div id="result-percent" class="result-score">0%</div>
+                <div id="result-detail" class="result-sub"></div>
+            </div>
+
+            <button id="next-btn">Nächste Frage</button>
+        </div>
+    </div>
+
+    
+    <!-- TAB-LEISTE (FOOTER): pro Seite ein eigenes SVG, in dem der aktive Tab hervorgehoben ist.
+         Die SVG-Dateien müssen im Ordner img/ liegen. -->
+    <nav id="tabbar" class="tabbar" aria-label="Hauptnavigation">
+        <div class="tabbar-art">
+            <img data-tab="start"    src="img/Footer_Start_aktiv.svg"    alt="" hidden>
+            <img data-tab="uebung"   src="img/Footer_Uebung_aktiv.svg"   alt="" hidden>
+            <img data-tab="pruefung" src="img/Footer_Pruefung_aktiv.svg" alt="" hidden>
+            <img data-tab="wissen"   src="img/Footer_Wissen_aktiv.svg"   alt="" hidden>
+            <img data-tab="profil"   src="img/Footer_Profil_aktiv.svg"   alt="" hidden>
+            <div class="tabbar-links">
+                <a href="#start"    data-tab="start"><span class="tab-label">Start</span></a>
+                <a href="#uebung"   data-tab="uebung"><span class="tab-label">Übung</span></a>
+                <a href="#pruefung" data-tab="pruefung"><span class="tab-label">Prüfung</span></a>
+                <a href="#wissen"   data-tab="wissen"><span class="tab-label">Wissen</span></a>
+                <a href="#profil"   data-tab="profil"><span class="tab-label">Profil</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        const questions = [
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
+                title: "Was muss anstelle von “...” stehen?",
+                image: "https://survival-kompass.de/img/artikel/eiche-knospe.jpg",
+                paragraphs: [
+                    "Die ... erkennst du daran, dass sich am Triebende mehrere kleine Knospen zusammendrängen. Wie eine kleine Traube. Oder wie eine Gruppe Freunde, die sich an einem Punkt trifft.",
+                    "Die einzelnen Knospen sind eiförmig, braun und glatt. Relativ klein. Aber das Entscheidende ist diese Ansammlung am Ende des Zweigs.",
+                    "<strong>Kein anderer heimischer Waldbaum macht das so.</strong>"
+                ],
+                options: [
+                    { text: "Rotbuche", correct: false },
+                    { text: "Eiche", correct: true },
+                    { text: "Bergahorn", correct: false },
+                    { text: "Hainbuche", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/knospen-von-buche-oder-fagus-sylvatica.jpg",
+                paragraphs: [
+                    "Spitz wie ein Dolch.",
+                    "Die ...knospe ist unverwechselbar. Lang, spitz und vom Zweig abstehend.",
+                    "Stell dir einen kleinen Speer vor, der seitlich vom Ast weg zeigt. Die Knospe ist schlank, die Spitze scharf. Die Schuppen sind braun und liegen eng übereinander wie ein kleiner Panzer."
+                ],
+                options: [
+                    { text: "Eiche", correct: false },
+                    { text: "Rotbuche", correct: true },
+                    { text: "Waldkiefer", correct: false },
+                    { text: "Birke", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
+                title: "Was muss anstelle von “...” stehen?",
+                image: "https://survival-kompass.de/img/artikel/linde-knospe.jpg",
+                paragraphs: [
+                    "Rot, rund und ein bisschen schief.",
+                    "Die ...knospe ist anders als die anderen. Rundlich statt spitz. Und oft ein bisschen asymmetrisch – als würde sie sich leicht zur Seite neigen.",
+                    "Was sie besonders macht: Die Farbe. Die meisten ...knospen sind rötlich bis dunkelrot. Das fällt auf zwischen all dem Braun und Grau des Winters.",
+                    "Zwei bis drei sichtbare Knospenschuppen. Das ist wenig. Bei der Buche zum Beispiel siehst du deutlich mehr Schuppen."
+                ],
+                options: [
+                    { text: "Spitzahorn", correct: false },
+                    { text: "Rotbuche", correct: false },
+                    { text: "Linde", correct: true },
+                    { text: "Eiche", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
+                title: "Was muss anstelle von “...” stehen?",
+                image: "https://survival-kompass.de/img/artikel/spitzahorn-knospe.jpg",
+                paragraphs: [
+                    "Paarweise am Zweig.",
+                    "Beim ... musst du auf die Anordnung schauen.",
+                    "Die Knospen sitzen gegenständig. Das heißt: Immer zwei auf gleicher Höhe, links und rechts am Zweig. Wie zwei Ohren. Die Knospen selbst sind dick und eiförmig. Oft dunkelrot gefärbt, manchmal auch grünlich-braun. Aber das Entscheidende ist diese paarweise Anordnung."
+                ],
+                options: [
+                    { text: "Spitzahorn", correct: true },
+                    { text: "Rotbuche", correct: false },
+                    { text: "Linde", correct: false },
+                    { text: "Eiche", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
+                title: "Was muss anstelle von “...” stehen?",
+                image: "https://survival-kompass.de/img/artikel/birke-knospe.jpg",
+                paragraphs: [
+                    "Klein, spitz und leicht abgespreizt.",
+                    "Die ...knospe ist zierlich, hellbraun bis rötlich-braun und sitzt oft etwas schräg am dünnen, kahlen Trieb.",
+                    "Anders als bei dicken Winterknospen wirkt sie fast ein wenig spitz-eiförmig und unscheinbar – passt aber genau zu den feinen Zweigen."
+                ],
+                options: [
+                    { text: "Birke", correct: true },
+                    { text: "Rotbuche", correct: false },
+                    { text: "Eiche", correct: false },
+                    { text: "Linde", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: "nadelbäume",
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/Tanne.jpg",
+                paragraphs: [
+                    "Wächst schmal kegelförmig und ein gutes Erkennungsmerkmal der ... sind die aufrecht stehenden Zapfen.",
+                    "Farbe der Nadeln: frisch-grün, grün, blaugrün, graugrün, glänzend dunkelgrün oder hellgrün je nach Art.",
+                    "Länge der Nadeln: unterschiedlich lang je nach Art der ....",
+                    "Nadelspitze: abgerundet (stechen nicht). Zwei deutliche, weiße Stomastreifen an der Unterseite der Nadeln und der Nadelgrund sitzt mit einem Saugnapf am Zweig."
+                ],
+                options: [
+                    { text: "Tanne", correct: true },
+                    { text: "Fichte", correct: false },
+                    { text: "Kiefer", correct: false },
+                    { text: "Douglasie", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: "nadelbäume",
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/Fichte.jpg",
+                paragraphs: [
+                    "Typisch für die ... sind die stechenden Nadeln, die herabhängenden Zapfen und der gerade, säulenförmige Stamm.",
+                    "Die Nadeln sind hart und spitz (es tut echt weh, alle anderen häufigen Nadelbäume stechen nicht so stark) und der Nadelgrund ist verholzt – ohne Saugnapf wie bei der Tanne.",
+                    "Farbe der Nadeln: grün, dunkelgrün, blaugrün oder grau; Länge etwa 0,8 bis 3 cm je nach Art, an der Unterseite manchmal zwei weiße Stomastreifen."
+                ],
+                options: [
+                    { text: "Fichte", correct: true },
+                    { text: "Tanne", correct: false },
+                    { text: "Kiefer", correct: false },
+                    { text: "Eibe", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: "nadelbäume",
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/Kiefer.jpg",
+                paragraphs: [
+                    "Heimische ... erkennst du daran, dass an der Blattbasis mehrere Nadeln sitzen – meistens zwei in Deutschland, bei anderen Arten bis zu fünf.",
+                    "Farbe der Nadeln: dunkelgrün oder blaugrün; Länge meist 4 bis 7 cm.",
+                    "Nadelspitze rundlich bis etwas spitz, und die Nadelunterseite zeigt keinen Unterschied zur Oberseite."
+                ],
+                options: [
+                    { text: "Kiefer", correct: true },
+                    { text: "Fichte", correct: false },
+                    { text: "Douglasie", correct: false },
+                    { text: "Tanne", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: "nadelbäume",
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/Eibe.jpg",
+                paragraphs: [
+                    "Das Nadelende hat einen kleinen Stiel, der auf den Zweig übergeht, und am Ende sitzt eine grüne Schuppe auf dem Zweig – typisch für die ....",
+                    "Die Nadeln sind schwarz-grün und glänzend (1,5 bis 3 cm lang), vorne weich abgerundet und stechen nicht; an den Seitenzweigen wachsen sie zweizeilig, an Leittrieben spiralförmig.",
+                    "Achtung: Die ... ist durch Taxin stark giftig (Nadeln, Samen, Holz und sogar Holzstaub – kein Tee oder Essen)."
+                ],
+                options: [
+                    { text: "Eibe", correct: true },
+                    { text: "Tanne", correct: false },
+                    { text: "Kiefer", correct: false },
+                    { text: "Fichte", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: "nadelbäume",
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/Douglasie.jpg",
+                paragraphs: [
+                    "Einzigartig bei der ...: Zerreibt man die Nadeln, verströmen sie einen zitronenartigen Geruch (und junge Triebspitzen riechen bzw. schmecken nach Zitrone).",
+                    "Die Nadeln sind weich und stechen nicht, spitz zulaufend aber abgerundet, etwa 3 bis 4 cm lang, grün bis blaugrün, an der Unterseite manchmal mit zwei deutlichen weißen Stomastreifen.",
+                    "Dazu kommt eine glatte, dunkelbraune Borke (bei jungen Bäumen oft mit Harzbeulen) und eine schlanke, kegelförmige Krone."
+                ],
+                options: [
+                    { text: "Douglasie", correct: true },
+                    { text: "Fichte", correct: false },
+                    { text: "Tanne", correct: false },
+                    { text: "Eibe", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: "standort",
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/eibe-wolfenbuettel.jpg",
+                paragraphs: [
+                    "Gehört zu den ältesten und geschütztesten Nadelbäumen rund um Wolfenbüttel.",
+                    "In Salzdahlum (Braunschweiger Straße) steht ein bedeutendes Exemplar als offizielles Naturdenkmal (ND WF 00023), und man findet die ... auch als Solitärbaum oder Hecke im Seeliger Park."
+                ],
+                options: [
+                    { text: "Europäische Eibe", correct: true },
+                    { text: "Waldkiefer", correct: false },
+                    { text: "Gemeine Fichte", correct: false },
+                    { text: "Europäische Lärche", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: "standort",
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/fichte-wolfenbuettel.jpg",
+                paragraphs: [
+                    "War über Jahrzehnte der klassische Brotbaum der regionalen Forstwirtschaft, auch rund um das Niedersächsische Forstamt Wolfenbüttel.",
+                    "Durch Trockenheit und Borkenkäferbefall stehen die ...bestände heute im Fokus des Waldumbaus hin zu klimastabilen Mischwäldern."
+                ],
+                options: [
+                    { text: "Gemeine Fichte", correct: true },
+                    { text: "Europäische Lärche", correct: false },
+                    { text: "Waldkiefer", correct: false },
+                    { text: "Douglasie", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: "standort",
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/kiefer-wolfenbuettel.jpg",
+                paragraphs: [
+                    "Als anspruchsloser und tiefwurzelnder Nadelbaum kommt die ... gut mit trockeneren Böden und warmen Sommern zurecht.",
+                    "In den Forsten und auf offenen, sandigeren Standorten im Landkreis rund um Wolfenbüttel spielt sie als robustes Nadelholz eine wichtige Rolle."
+                ],
+                options: [
+                    { text: "Waldkiefer", correct: true },
+                    { text: "Europäische Eibe", correct: false },
+                    { text: "Gemeine Fichte", correct: false },
+                    { text: "Europäische Lärche", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: "standort",
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/laerche-wolfenbuettel.jpg",
+                paragraphs: [
+                    "Als einziger heimischer Nadelbaum, der im Herbst seine Nadeln abwirft, sorgt die ... im Lechlumer Holz und im Elm für eine markante goldgelbe Herbstfärbung.",
+                    "In den Wäldern rund um Wolfenbüttel wird sie geschätzt, weil sie viel Licht auf den Waldboden lässt und sich gut in Laubmischwälder mit Eichen und Buchen einfügt."
+                ],
+                options: [
+                    { text: "Europäische Lärche", correct: true },
+                    { text: "Douglasie", correct: false },
+                    { text: "Gemeine Fichte", correct: false },
+                    { text: "Waldkiefer", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: "standort",
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/douglasie-wolfenbuettel.jpg",
+                paragraphs: [
+                    "Wichtiger, nicht-heimischer Nadelbaum, der beim Waldumbau rund um Wolfenbüttel und in Niedersachsen als klimastabilere Alternative für absterbende Fichtenbestände gepflanzt wird.",
+                    "Die ... hat eine glatte, dunkelbraune Borke (bei jungen Bäumen oft mit Harzbeulen) und weiche Nadeln, die beim Zerreiben nach Zitrone duften."
+                ],
+                options: [
+                    { text: "Douglasie", correct: true },
+                    { text: "Waldkiefer", correct: false },
+                    { text: "Europäische Eibe", correct: false },
+                    { text: "Europäische Lärche", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: "nadelbäume",
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/douglasie-essbare-triebspitzen.jpg",
+                paragraphs: [
+                    "Die Triebspitzen der ... sind weich und bekömmlich.",
+                    "Sie schmecken nach Zitrone und du kannst sie besonders gut im Mai und Juni ernten."
+                ],
+                options: [
+                    { text: "Douglasie", correct: true },
+                    { text: "Fichte", correct: false },
+                    { text: "Tanne", correct: false },
+                    { text: "Kiefer", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/Buche-ohne.png",
+                paragraphs: [
+                    "Das erkennt man an den langen, schlanken und spitzen Knospen, die vom Zweig abstehen.",
+                    "Die ...knospe ist spindelförmig bis spitz zulaufend, mit dicht übereinanderliegenden braunen Schuppen.",
+                    "Im Vergleich dazu wirkt die Hainbuche mit kleineren, eher anliegenden Knospen deutlich gedrungener, während die ...knospe wie ein kleiner Dolch hervorsticht."
+                ],
+                options: [
+                    { text: "Rotbuche", correct: true },
+                    { text: "Hainbuche", correct: false },
+                    { text: "Eiche", correct: false },
+                    { text: "Pappel", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/Eiche-ohne.png",
+                paragraphs: [
+                    "Das erkennt man an den gebüschten Endknospen, die am Triebende dicht beieinander sitzen.",
+                    "Die ... unterscheidet sich von der Rotbuche durch diese typische Knospenansammlung an der Spitze und die rundlich-eiförmige Form statt langer, einzelner Dolchknospen.",
+                    "Die einzelnen braunen Schuppen liegen glatt und dicht an."
+                ],
+                options: [
+                    { text: "Eiche", correct: true },
+                    { text: "Rotbuche", correct: false },
+                    { text: "Rosskastanie", correct: false },
+                    { text: "Feldahorn", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/Bergahorn-ohne.png",
+                paragraphs: [
+                    "Das erkennt man an den gegenständigen Knospen und der auffällig frischgrünen bis gelbgrünen Färbung auf dem Bild.",
+                    "Der ... unterscheidet sich vom Spitzahorn oft durch eine eher grünliche statt kräftig rote Knospenfarbe, während die Esche tiefschwarze Knospen besitzt.",
+                    "Die Knospen sitzen paarweise gegenüber am Trieb."
+                ],
+                options: [
+                    { text: "Bergahorn", correct: true },
+                    { text: "Eiche", correct: false },
+                    { text: "Feldahorn", correct: false },
+                    { text: "Rotbuche", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/Esche-ohne.png",
+                paragraphs: [
+                    "Das erkennt man sofort an den tiefschwarzen, samtig-dunklen Knospen, die gegenständig am Trieb sitzen.",
+                    "Die ... unterscheidet sich von Berg- und Spitzahorn klar durch diese dunkle, fast schwarze Färbung und die kräftige, wuchtige Endknospe mit den seitlichen Knospenpaaren."
+                ],
+                options: [
+                    { text: "Esche", correct: true },
+                    { text: "Bergahorn", correct: false },
+                    { text: "Rosskastanie", correct: false },
+                    { text: "Hainbuche", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/Feldahorn-ohne.png",
+                paragraphs: [
+                    "Das erkennt man an den kleinen, gegenständigen Knospen mit feinen hellen Härchen/Fransen an den Schuppenrändern.",
+                    "Der ... unterscheidet sich von der Esche durch seine viel kleinere, bräunliche Knospe mit behaarten Rändern und vom Bergahorn durch seine kompaktere Größe am Zweig."
+                ],
+                options: [
+                    { text: "Feldahorn", correct: true },
+                    { text: "Bergahorn", correct: false },
+                    { text: "Esche", correct: false },
+                    { text: "Eiche", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/Hainbuche-ohne.png",
+                paragraphs: [
+                    "Das erkennt man an den schlanken, zugespitzten Knospen, die deutlich enger und flacher am Zweig anliegen als bei der Rotbuche.",
+                    "Die ... unterscheidet sich von der Rotbuche vor allem dadurch, dass die Knospen nicht so stark abgespreizt wirken und oft etwas kleiner und zierlicher am Trieb sitzen."
+                ],
+                options: [
+                    { text: "Hainbuche", correct: true },
+                    { text: "Rotbuche", correct: false },
+                    { text: "Pappel", correct: false },
+                    { text: "Eiche", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/Pappel-ohne.png",
+                paragraphs: [
+                    "Das erkennt man an den spitzen, länglichen, wechselständigen Knospen mit glänzend-harzigem Schimmer und leicht gelblich-grünlichen Tönen.",
+                    "Die ... unterscheidet sich von der Rotbuche durch die schräg zugespitzte Form mit glänzenden Schuppen und dem markanten Triebverlauf."
+                ],
+                options: [
+                    { text: "Pappel", correct: true },
+                    { text: "Rotbuche", correct: false },
+                    { text: "Rosskastanie", correct: false },
+                    { text: "Eiche", correct: false }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume"],
+                title: "Was muss anstelle von “...” stehen?",
+                image: "img/Rosskastanie-ohne.png",
+                paragraphs: [
+                    "Das erkennt man an den großen, dicken, gegenständigen Knospen, die stark glänzend und klebrig-harzig wirken.",
+                    "Die ... unterscheidet sich von Bergahorn und Esche durch ihre besonders wuchtige Größe und den kräftigen, glänzend braunen Harzüberzug."
+                ],
+                options: [
+                    { text: "Rosskastanie", correct: true },
+                    { text: "Bergahorn", correct: false },
+                    { text: "Esche", correct: false },
+                    { text: "Eiche", correct: false }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "UVV Forst: Hänger",
+                image: "",
+                paragraphs: [
+                    "Bei der Motorsägenarbeit in den Beständen rund um Wolfenbüttel bleibt ein Baum hängen.",
+                    "Aussage: Nach UVV darfst du den Stützbaum direkt darunter fällen, um den Hänger zu lösen."
+                ],
+                options: [
+                    { text: "Richtig", correct: false },
+                    { text: "Falsch", correct: true }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "UVV Forst: Hänger",
+                image: "",
+                paragraphs: [
+                    "Bei der Motorsägenarbeit rund um Wolfenbüttel bleibt ein gefällter Baum an einem Nachbarbaum hängen.",
+                    "Aussage: Zulässig ist das Abziehen mit Seilwinde oder geeignetem Fällhilfsmittel."
+                ],
+                options: [
+                    { text: "Richtig", correct: true },
+                    { text: "Falsch", correct: false }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "psa",
+                title: "PSA an der Motorsäge",
+                image: "",
+                paragraphs: [
+                    "Bei der Arbeit mit der Motorsäge in der Forstwirtschaft gilt eine feste Mindest-PSA (Persönliche Schutzausrüstung).",
+                    "Aussage: Schnittschutzhose, Schutzhelm und Schnittschutzschuhe gehören zwingend dazu."
+                ],
+                options: [
+                    { text: "Richtig", correct: true },
+                    { text: "Falsch", correct: false }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "psa",
+                title: "PSA an der Motorsäge",
+                image: "",
+                paragraphs: [
+                    "Bei der Arbeit mit der Motorsäge reicht normale Arbeitskleidung mit Regenkombi und Wanderschuhen aus.",
+                    "Aussage: Das genügt nach den forstlichen Sicherheitsvorgaben."
+                ],
+                options: [
+                    { text: "Richtig", correct: false },
+                    { text: "Falsch", correct: true }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Spannungsholz im Revier",
+                image: "",
+                paragraphs: [
+                    "Bei Windwurf- und Schneebruchholz im Elm oder in der Asse steht ein Stamm unter starker Biegungsspannung.",
+                    "Aussage: Du schneidest zuerst tief in die Druckseite, bevor du entlastest."
+                ],
+                options: [
+                    { text: "Richtig", correct: false },
+                    { text: "Falsch", correct: true }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Spannungsholz im Revier",
+                image: "",
+                paragraphs: [
+                    "Bei Windwurf- und Schneebruchholz im Elm oder in der Asse liegt ein Stamm unter Spannung.",
+                    "Aussage: Du ritzt die Druckseite leicht an und schneidest dann von der Zugseite."
+                ],
+                options: [
+                    { text: "Richtig", correct: true },
+                    { text: "Falsch", correct: false }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Sicherheitsabstand",
+                image: "",
+                paragraphs: [
+                    "Bei manueller Holzernte mit der Motorsäge arbeiten zwei Personen im Bestand.",
+                    "Aussage: Der Sicherheitsabstand beträgt in der Regel mindestens zwei Baumlängen."
+                ],
+                options: [
+                    { text: "Richtig", correct: true },
+                    { text: "Falsch", correct: false }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Sicherheitsabstand",
+                image: "",
+                paragraphs: [
+                    "Bei manueller Holzernte mit der Motorsäge arbeiten zwei Personen nebeneinander.",
+                    "Aussage: Ein Abstand von zehn Metern reicht in der Regel aus."
+                ],
+                options: [
+                    { text: "Richtig", correct: false },
+                    { text: "Falsch", correct: true }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Spaziergänger am Arbeitsbereich",
+                image: "",
+                paragraphs: [
+                    "Während der Holzernte im Revier nähert sich ein Spaziergänger einem abgesperrten Arbeitsbereich auf einem Waldweg.",
+                    "Aussage: Du musst den Schnitt zügig beenden und danach warnen."
+                ],
+                options: [
+                    { text: "Richtig", correct: false },
+                    { text: "Falsch", correct: true }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Spaziergänger im Gefahrenbereich",
+                image: "",
+                paragraphs: [
+                    "Während der Holzernte im Revier nähert sich ein Spaziergänger einem abgesperrten Arbeitsbereich auf einem Waldweg.",
+                    "Aussage: Du unterbrichst die Arbeit sofort und sprichst die Person an."
+                ],
+                options: [
+                    { text: "Richtig", correct: true },
+                    { text: "Falsch", correct: false }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Motorsäge betanken: Sicherheit",
+                image: "",
+                paragraphs: [
+                    "Warum ist das Betanken einer heißen Motorsäge im Wald an ein klares Sicherheitsverfahren gebunden?",
+                    "Aussage: Kraftstoffdämpfe können sich an heißen Teilen entzünden und zu Bränden führen."
+                ],
+                options: [
+                    { text: "Richtig", correct: true },
+                    { text: "Falsch", correct: false }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Motorsäge betanken: Sicherheit",
+                image: "",
+                paragraphs: [
+                    "Beim Betanken einer heißen Motorsäge im Revier geht es vor allem um andere Gründe.",
+                    "Aussage: Das Sicherheitsverfahren dient nur dazu, dass die Kette bei Hitze nicht zu stark spannt."
+                ],
+                options: [
+                    { text: "Richtig", correct: false },
+                    { text: "Falsch", correct: true }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Motorsäge betanken: Sicherheit",
+                image: "",
+                paragraphs: [
+                    "Beim Nachfüllen von Kraftstoff an einer warmen Motorsäge muss das Sicherheitsverfahren eingehalten werden.",
+                    "Aussage: Der Hauptgrund liegt darin, dass das Kettenöl sonst seine Schmierwirkung verliert."
+                ],
+                options: [
+                    { text: "Richtig", correct: false },
+                    { text: "Falsch", correct: true }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Rettungskonzept Forstamt Wolfenbüttel",
+                image: "",
+                paragraphs: [
+                    "Was ist beim Anlegen eines Rettungskonzepts vor Beginn der Waldarbeit im Forstamt Wolfenbüttel unbedingt festzulegen und bereitzuhalten?",
+                    "Aussage: Rettungspunkte, befahrbare Zufahrten für Rettungskräfte sowie erreichbares Erste-Hilfe- und Notfallmaterial."
+                ],
+                options: [
+                    { text: "Richtig", correct: true },
+                    { text: "Falsch", correct: false }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Rettungskonzept Forstamt Wolfenbüttel",
+                image: "",
+                paragraphs: [
+                    "Vor Beginn der Waldarbeit im Forstamt Wolfenbüttel wird das Rettungskonzept festgelegt.",
+                    "Aussage: Es reicht aus, wenn im Fahrzeug ausschließlich ein Verbandkasten liegt und sonst nichts geklärt ist."
+                ],
+                options: [
+                    { text: "Richtig", correct: false },
+                    { text: "Falsch", correct: true }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Rettungskonzept Forstamt Wolfenbüttel",
+                image: "",
+                paragraphs: [
+                    "Ein vollständiges Rettungskonzept im Revier regelt die Notfallversorgung und Erreichbarkeit.",
+                    "Aussage: Ein Ersatzschwert für die Motorsäge ersetzt bereits ein festgelegtes Rettungskonzept."
+                ],
+                options: [
+                    { text: "Richtig", correct: false },
+                    { text: "Falsch", correct: true }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Seilwinde am Forstschlepper",
+                image: "",
+                paragraphs: [
+                    "Welche Gefahr besteht beim Arbeiten mit der Seilwinde am Forstschlepper, wenn das Zugseil unter hoher Last steht?",
+                    "Aussage: Bei Seilriss oder Abrutschen besteht die Gefahr eines gefährlichen Peitschenschlags."
+                ],
+                options: [
+                    { text: "Richtig", correct: true },
+                    { text: "Falsch", correct: false }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Seilwinde am Forstschlepper",
+                image: "",
+                paragraphs: [
+                    "Steht das Zugseil der Seilwinde am Forstschlepper unter hoher Last, gibt es klare Risiken.",
+                    "Aussage: Die Hauptgefahr dabei ist das Einfrieren der Hydraulikleitungen im Sommer."
+                ],
+                options: [
+                    { text: "Richtig", correct: false },
+                    { text: "Falsch", correct: true }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Seilwinde am Forstschlepper",
+                image: "",
+                paragraphs: [
+                    "Beim Arbeiten mit der Seilwinde am Forstschlepper unter hoher Last ist Vorsicht geboten.",
+                    "Aussage: Die Gefahr eines Peitschenschlags besteht nur, wenn das Zugseil aus Stahl besteht."
+                ],
+                options: [
+                    { text: "Richtig", correct: false },
+                    { text: "Falsch", correct: true }
+                ]
+            },
+            {
+                category: "sicherheit",
+                subCategory: "uvv",
+                title: "Sicherheitsabstand bei der Holzernte",
+                image: "",
+                paragraphs: [
+                    "Bei manueller Holzernte mit der Motorsäge arbeiten zwei Personen im Bestand.",
+                    "Aussage: Ein Abstand von zehn Metern reicht in der Regel nicht aus, weil der Sicherheitsabstand bei manueller Holzernte in der Regel mindestens zwei Baumlängen betragen muss, da ein fallender Baum und herabfallende Äste weit über zehn Meter hinausreichen können."
+                ],
+                options: [
+                    { text: "Richtig", correct: false },
+                    { text: "Falsch", correct: true }
+                ]
+            },{
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume", "bildvergleich"],
+                title: "Welche Knospe gehört zur Rotbuche?",
+                image: "",
+                paragraphs: [
+                    "Wähle die richtige Antwort aus den vier Bildern.",
+                    "Vergleiche Form, Spitze und Stellung der Knospen am Zweig."
+                ],
+                imageOptions: [
+                    {
+                        image: "img/Hainbuche-ohne.png",
+                        label: "Hainbuche",
+                        correct: false
+                    },
+                    {
+                        image: "img/Buche-ohne.png",
+                        label: "Rotbuche",
+                        correct: true
+                    },
+                    {
+                        image: "img/Pappel-ohne.png",
+                        label: "Pappel",
+                        correct: false
+                    },
+                    {
+                        image: "img/Birke-ohne.png",
+                        label: "Birke",
+                        correct: false
+                    }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume", "bildvergleich"],
+                title: "Welche Knospe gehört zur Eiche?",
+                image: "",
+                paragraphs: [
+                    "Wähle die richtige Antwort aus den vier Bildern.",
+                    "Vergleiche Form, Spitze und Stellung der Knospen am Zweig."
+                ],
+                imageOptions: [
+                    {
+                        image: "img/Eiche-ohne.png",
+                        label: "Eiche",
+                        correct: true
+                    },
+                    {
+                        image: "img/Bergahorn-ohne.png",
+                        label: "Bergahorn",
+                        correct: false
+                    },
+                    {
+                        image: "img/Feldahorn-ohne.png",
+                        label: "Feldahorn",
+                        correct: false
+                    },
+                    {
+                        image: "img/Rosskastanie-ohne.png",
+                        label: "Rosskastanie",
+                        correct: false
+                    }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume", "bildvergleich"],
+                title: "Welche Knospe gehört zur Esche?",
+                image: "",
+                paragraphs: [
+                    "Wähle die richtige Antwort aus den vier Bildern.",
+                    "Vergleiche Form, Spitze und Stellung der Knospen am Zweig."
+                ],
+                imageOptions: [
+                    {
+                        image: "img/Esche-ohne.png",
+                        label: "Esche",
+                        correct: true
+                    },
+                    {
+                        image: "img/Bergahorn-ohne.png",
+                        label: "Bergahorn",
+                        correct: false
+                    },
+                    {
+                        image: "img/Feldahorn-ohne.png",
+                        label: "Feldahorn",
+                        correct: false
+                    },
+                    {
+                        image: "img/Rosskastanie-ohne.png",
+                        label: "Rosskastanie",
+                        correct: false
+                    }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume", "bildvergleich"],
+                title: "Welche Knospe gehört zur Hainbuche?",
+                image: "",
+                paragraphs: [
+                    "Wähle die richtige Antwort aus den vier Bildern.",
+                    "Vergleiche Form, Spitze und Stellung der Knospen am Zweig."
+                ],
+                imageOptions: [
+                    {
+                        image: "img/Hainbuche-ohne.png",
+                        label: "Hainbuche",
+                        correct: true
+                    },
+                    {
+                        image: "img/Buche-ohne.png",
+                        label: "Rotbuche",
+                        correct: false
+                    },
+                    {
+                        image: "img/Pappel-ohne.png",
+                        label: "Pappel",
+                        correct: false
+                    },
+                    {
+                        image: "img/Birke-ohne.png",
+                        label: "Birke",
+                        correct: false
+                    }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume", "bildvergleich"],
+                title: "Welche Knospe gehört zur Pappel?",
+                image: "",
+                paragraphs: [
+                    "Wähle die richtige Antwort aus den vier Bildern.",
+                    "Vergleiche Form, Spitze und Stellung der Knospen am Zweig."
+                ],
+                imageOptions: [
+                    {
+                        image: "img/Pappel-ohne.png",
+                        label: "Pappel",
+                        correct: true
+                    },
+                    {
+                        image: "img/Buche-ohne.png",
+                        label: "Rotbuche",
+                        correct: false
+                    },
+                    {
+                        image: "img/Hainbuche-ohne.png",
+                        label: "Hainbuche",
+                        correct: false
+                    },
+                    {
+                        image: "img/Birke-ohne.png",
+                        label: "Birke",
+                        correct: false
+                    }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume", "bildvergleich"],
+                title: "Welche Knospe gehört zur Rosskastanie?",
+                image: "",
+                paragraphs: [
+                    "Wähle die richtige Antwort aus den vier Bildern.",
+                    "Vergleiche Form, Spitze und Stellung der Knospen am Zweig."
+                ],
+                imageOptions: [
+                    {
+                        image: "img/Rosskastanie-ohne.png",
+                        label: "Rosskastanie",
+                        correct: true
+                    },
+                    {
+                        image: "img/Bergahorn-ohne.png",
+                        label: "Bergahorn",
+                        correct: false
+                    },
+                    {
+                        image: "img/Feldahorn-ohne.png",
+                        label: "Feldahorn",
+                        correct: false
+                    },
+                    {
+                        image: "img/Esche-ohne.png",
+                        label: "Esche",
+                        correct: false
+                    }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume", "bildvergleich"],
+                title: "Welche Knospe gehört zum Feldahorn?",
+                image: "",
+                paragraphs: [
+                    "Wähle die richtige Antwort aus den vier Bildern.",
+                    "Vergleiche Form, Spitze und Stellung der Knospen am Zweig."
+                ],
+                imageOptions: [
+                    {
+                        image: "img/Feldahorn-ohne.png",
+                        label: "Feldahorn",
+                        correct: true
+                    },
+                    {
+                        image: "img/Bergahorn-ohne.png",
+                        label: "Bergahorn",
+                        correct: false
+                    },
+                    {
+                        image: "img/Eiche-ohne.png",
+                        label: "Eiche",
+                        correct: false
+                    },
+                    {
+                        image: "img/Rosskastanie-ohne.png",
+                        label: "Rosskastanie",
+                        correct: false
+                    }
+                ]
+            },
+            {
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume", "bildvergleich"],
+                title: "Welche Knospe gehört zum Bergahorn?",
+                image: "",
+                paragraphs: [
+                    "Wähle die richtige Antwort aus den vier Bildern.",
+                    "Vergleiche Form, Spitze und Stellung der Knospen am Zweig."
+                ],
+                imageOptions: [
+                    {
+                        image: "img/Bergahorn-ohne.png",
+                        label: "Bergahorn",
+                        correct: true
+                    },
+                    {
+                        image: "img/Feldahorn-ohne.png",
+                        label: "Feldahorn",
+                        correct: false
+                    },
+                    {
+                        image: "img/Esche-ohne.png",
+                        label: "Esche",
+                        correct: false
+                    },
+                    {
+                        image: "img/Rosskastanie-ohne.png",
+                        label: "Rosskastanie",
+                        correct: false
+                    }
+                ]
+            },{
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume", "bildvergleich"],
+                title: "Welche Knospe gehört zur Birke?",
+                image: "",
+                paragraphs: [
+                    "Wähle die richtige Antwort aus den vier Bildern.",
+                    "Vergleiche Form, Spitze und Stellung der Knospen am Zweig."
+                ],
+                imageOptions: [
+                    {
+                        image: "img/Birke-ohne.png",
+                        label: "Birke",
+                        correct: true
+                    },
+                    {
+                        image: "img/Buche-ohne.png",
+                        label: "Rotbuche",
+                        correct: false
+                    },
+                    {
+                        image: "img/Hainbuche-ohne.png",
+                        label: "Hainbuche",
+                        correct: false
+                    },
+                    {
+                        image: "img/Pappel-ohne.png",
+                        label: "Pappel",
+                        correct: false
+                    }
+                ]
+            },{
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume", "bildvergleich"],
+                title: "Welche Knospe gehört zum Spitzahorn?",
+                image: "",
+                paragraphs: [
+                    "Wähle die richtige Antwort aus den vier Bildern.",
+                    "Vergleiche Form, Spitze und Stellung der Knospen am Zweig."
+                ],
+                imageOptions: [
+                    {
+                        image: "img/Spitzahorn-ohne.png",
+                        label: "Spitzahorn",
+                        correct: true
+                    },
+                    {
+                        image: "img/Bergahorn-ohne.png",
+                        label: "Bergahorn",
+                        correct: false
+                    },
+                    {
+                        image: "img/Feldahorn-ohne.png",
+                        label: "Feldahorn",
+                        correct: false
+                    },
+                    {
+                        image: "img/Winterlinde-ohne.png",
+                        label: "Winterlinde",
+                        correct: false
+                    }
+                ]
+            },{
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume", "bildvergleich"],
+                title: "Welche Knospe gehört zur Winterlinde?",
+                image: "",
+                paragraphs: [
+                    "Wähle die richtige Antwort aus den vier Bildern.",
+                    "Vergleiche Form, Spitze und Stellung der Knospen am Zweig."
+                ],
+                imageOptions: [
+                    {
+                        image: "img/Winterlinde-ohne.png",
+                        label: "Winterlinde",
+                        correct: true
+                    },
+                    {
+                        image: "img/Spitzahorn-ohne.png",
+                        label: "Spitzahorn",
+                        correct: false
+                    },
+                    {
+                        image: "img/Tilia_platyphallos_bud.jpg",
+                        label: "Sommerlinde",
+                        correct: false
+                    },
+                    {
+                        image: "img/Eiche-ohne.png",
+                        label: "Eiche",
+                        correct: false
+                    }
+                ]
+            },{
+                category: "baumarten",
+                subCategory: ["knospen", "laubbäume", "bildvergleich"],
+                title: "Welche Knospe gehört zur Sommerlinde?",
+                image: "",
+                paragraphs: [
+                    "Wähle die richtige Antwort aus den vier Bildern.",
+                    "Vergleiche Form, Spitze und Stellung der Knospen am Zweig."
+                ],
+                imageOptions: [
+                    {
+                        image: "img/Tilia_platyphallos_bud.jpg",
+                        label: "Sommerlinde",
+                        correct: true
+                    },
+                    {
+                        image: "img/Spitzahorn-ohne.png",
+                        label: "Spitzahorn",
+                        correct: false
+                    },
+                    {
+                        image: "img/Winterlinde-ohne.png",
+                        label: "Winterlinde",
+                        correct: false
+                    },
+                    {
+                        image: "img/Eiche-ohne.png",
+                        label: "Eiche",
+                        correct: false
+                    }
+                ]
+            },
+
+        ];
+
+
+        function shuffleArray(array) {
+            const copy = [...array];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+
+        let activeQuestions = [];
+        let currentIndex = 0;
+        let correctCount = 0;
+        let answered = false;
+
+        // --- Elemente der Seite ---
+        const startScreen = document.getElementById('start-screen');
+        const categoryScreen = document.getElementById('category-screen');
+        const baumartenScreen = document.getElementById('baumarten-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const startBtn = document.getElementById('start-btn');
+        const closeBtn = document.getElementById('close-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const resultBox = document.getElementById('result-box');
+        let categoryListenersAttached = false;
+
+        function isTrueFalseOptions(options) {
+            if (!Array.isArray(options) || options.length !== 2) return false;
+            const texts = options.map(o => o.text.trim().toLowerCase());
+            return texts.includes("richtig") && texts.includes("falsch");
+        }
+
+        function renderQuestion(index) {
+            answered = false;
+            resultBox.style.display = "none";
+            document.querySelector('.quiz-header').style.display = "block";
+            document.getElementById('q-text').style.display = "block";
+            document.getElementById('q-options').style.display = "grid";
+
+            const q = activeQuestions[index];
+            document.getElementById('q-progress').textContent = `Frage ${index + 1} von ${activeQuestions.length}`;
+            document.getElementById('q-title').textContent = q.title;
+
+            const imgEl = document.getElementById('q-image');
+            if (q.image && q.image.trim() !== "") {
+                imgEl.src = q.image;
+                imgEl.style.display = "block";
+            } else {
+                imgEl.removeAttribute("src");
+                imgEl.style.display = "none";
+            }
+
+            const textContainer = document.getElementById('q-text');
+            textContainer.innerHTML = q.paragraphs.map(p => `<p>${p}</p>`).join("");
+
+            const optionsContainer = document.getElementById('q-options');
+            optionsContainer.innerHTML = "";
+            nextBtn.style.display = "none";
+
+            if (Array.isArray(q.imageOptions) && q.imageOptions.length > 0) {
+                optionsContainer.className = "image-options-grid animate-smooth delay-3";
+                const shuffledImageOptions = shuffleArray(q.imageOptions);
+
+                shuffledImageOptions.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.type = "button";
+                    btn.className = "image-option-btn";
+                    btn.setAttribute("aria-label", opt.label || `Bildoption ${idx + 1}`);
+
+                    const thumb = document.createElement('img');
+                    thumb.src = opt.image;
+                    thumb.alt = opt.label || `Option ${idx + 1}`;
+                    thumb.loading = "lazy";
+
+                    btn.appendChild(thumb);
+                    btn.addEventListener('click', () => checkAnswer(btn, opt.correct));
+                    optionsContainer.appendChild(btn);
+                });
+            } else {
+                optionsContainer.className = "options-container animate-smooth delay-3";
+                const orderedOptions = isTrueFalseOptions(q.options)
+                    ? [
+                        q.options.find(o => o.text.trim().toLowerCase() === "richtig"),
+                        q.options.find(o => o.text.trim().toLowerCase() === "falsch")
+                    ]
+                    : shuffleArray(q.options);
+
+                orderedOptions.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn";
+                    btn.textContent = opt.text;
+                    btn.addEventListener('click', () => checkAnswer(btn, opt.correct));
+                    optionsContainer.appendChild(btn);
+                });
+            }
+        }
+
+
+        /* ===================================================
+           NAVIGATION MIT TAB-LEISTE (FOOTER)
+           5 Tabs: Start, Übung, Prüfung, Wissen, Profil.
+           Gebaut ist bisher nur "Prüfung" (Start-Screen, Kategorien, Baumarten, Quiz).
+           Die anderen Tabs zeigen eine Platzhalter-Seite "Kommt bald".
+           =================================================== */
+        const TABS = ['start', 'uebung', 'pruefung', 'wissen', 'profil'];
+        const DEFAULT_TAB = 'pruefung';   // Wenn die Startseite fertig ist: hier auf 'start' ändern
+
+        const tabbar = document.getElementById('tabbar');
+        const tabImages = tabbar.querySelectorAll('img[data-tab]');
+        const tabLinks = tabbar.querySelectorAll('a[data-tab]');
+        const placeholderPages = {
+            start: document.getElementById('page-start'),
+            uebung: document.getElementById('page-uebung'),
+            wissen: document.getElementById('page-wissen'),
+            profil: document.getElementById('page-profil')
+        };
+        const pruefungScreens = [startScreen, categoryScreen, baumartenScreen, quizScreen];
+
+        let activeTab = null;
+        let pruefungScreen = startScreen;   // merkt sich, wo man im Tab "Prüfung" zuletzt war
+
+        // Zeigt einen Tab und passt die Tab-Leiste an
+        function renderTab(tab) {
+            activeTab = tab;
+
+            // erst alles ausblenden ...
+            pruefungScreens.concat(Object.values(placeholderPages)).forEach(function(page) {
+                page.style.display = 'none';
+            });
+
+            // ... dann die richtige Seite zeigen
+            const page = (tab === 'pruefung') ? pruefungScreen : placeholderPages[tab];
+            page.style.display = 'flex';
+
+            // im Quiz keine Tab-Leiste
+            document.body.classList.toggle('in-quiz', page === quizScreen);
+
+            // Footer: das SVG mit dem aktiven Tab zeigen
+            tabImages.forEach(function(img) {
+                img.hidden = (img.dataset.tab !== tab);
+            });
+            tabLinks.forEach(function(link) {
+                if (link.dataset.tab === tab) {
+                    link.setAttribute('aria-current', 'page');
+                } else {
+                    link.removeAttribute('aria-current');
+                }
+            });
+
+            window.scrollTo(0, 0);
+        }
+
+        // Wechsel zwischen den Screens innerhalb von "Prüfung"
+        function showScreen(targetScreen) {
+            pruefungScreen = targetScreen;
+            renderTab('pruefung');
+        }
+
+        function tabFromHash() {
+            const name = location.hash.replace('#', '');
+            return TABS.includes(name) ? name : DEFAULT_TAB;
+        }
+
+        // Anderer Tab: der Link ändert die Adresse (#start ...), hashchange zeigt dann die Seite
+        window.addEventListener('hashchange', function() {
+            renderTab(tabFromHash());
+        });
+
+        // Denselben Tab nochmal tippen: "Prüfung" springt zurück zur Prüfung-Startseite
+        tabLinks.forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                const tab = link.dataset.tab;
+                if (tab !== activeTab) return;
+                event.preventDefault();
+                if (tab === 'pruefung') pruefungScreen = startScreen;
+                renderTab(tab);
+            });
+        });
+
+        // Falls die SVG-Dateien fehlen: einfache Text-Tabs anzeigen
+        tabImages.forEach(function(img) {
+            img.addEventListener('error', function() {
+                tabbar.classList.add('no-art');
+                tabImages.forEach(function(other) { other.hidden = true; });
+            });
+        });
+
+        function startFilteredQuiz(predicate) {
+            const pool = questions.filter(predicate);
+            activeQuestions = shuffleArray(pool.length > 0 ? pool : questions);
+            currentIndex = 0;
+            correctCount = 0;
+            nextBtn.style.display = 'none';
+            resultBox.style.display = 'none';
+            showScreen(quizScreen);
+            renderQuestion(currentIndex);
+        }
+
+       function matchesSubCategory(question, filter) {
+            if (Array.isArray(question.subCategory)) {
+                return question.subCategory.includes(filter);
+            }
+            return question.subCategory === filter;
+        }
+
+        function setupCategoryNavigation() {
+            if (categoryListenersAttached) return;
+            categoryListenersAttached = true;
+
+            const catBackBtn = document.getElementById('cat-back-btn');
+            const openBaumartenBtn = document.getElementById('open-baumarten-btn');
+            const baumBackBtn = document.getElementById('baum-back-btn');
+            const startSicherheitBtn = document.getElementById('start-sicherheit-btn');
+            const startFunBtn = document.getElementById('start-fun-btn');
+            const startAllBtn = document.getElementById('start-all-btn');
+
+            if (catBackBtn) {
+                catBackBtn.addEventListener('click', function() {
+                    showScreen(startScreen);
+                });
+            }
+
+            if (openBaumartenBtn && baumartenScreen) {
+                openBaumartenBtn.addEventListener('click', function() {
+                    showScreen(baumartenScreen);
+                });
+            }
+
+            if (baumBackBtn && categoryScreen) {
+                baumBackBtn.addEventListener('click', function() {
+                    showScreen(categoryScreen);
+                });
+            }
+
+            if (startSicherheitBtn) {
+                startSicherheitBtn.addEventListener('click', function() {
+                    startFilteredQuiz(q => q.category === 'sicherheit');
+                });
+            }
+
+            if (startFunBtn) {
+                startFunBtn.addEventListener('click', function() {
+                    startFilteredQuiz(q => q.category === 'fun');
+                });
+            }
+
+            if (startAllBtn) {
+                startAllBtn.addEventListener('click', function() {
+                    startFilteredQuiz(() => true);
+                });
+            }
+
+            document.querySelectorAll('#baumarten-screen .menu-btn[data-filter]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const filter = btn.getAttribute('data-filter');
+                    if (filter === 'alle-baumarten') {
+                        startFilteredQuiz(q => q.category === 'baumarten');
+                    } else {
+                        startFilteredQuiz(q => q.category === 'baumarten' && matchesSubCategory(q, filter));
+                    }
+                });
+            });
+        }
+
+
+        startBtn.addEventListener('click', function() {
+            showScreen(categoryScreen);
+        });
+
+        function goHome() {
+            nextBtn.style.display = 'none';
+            resultBox.style.display = 'none';
+            showScreen(startScreen);
+        }
+
+        closeBtn.addEventListener('click', goHome);
+
+        function checkAnswer(button, isCorrect) {
+            if (answered) return;
+            answered = true;
+
+            if (isCorrect) {
+                correctCount++;
+                button.classList.add('correct');
+            } else {
+                button.classList.add('wrong');
+            }
+
+            if (currentIndex < activeQuestions.length - 1) {
+                nextBtn.textContent = "Nächste Frage";
+            } else {
+                nextBtn.textContent = "Auswertung anzeigen";
+            }
+            nextBtn.style.display = "flex";
+        }
+
+        function showFinalResult() {
+            document.querySelector('.quiz-header').style.display = "none";
+            document.getElementById('q-image').style.display = "none";
+            document.getElementById('q-text').style.display = "none";
+            document.getElementById('q-options').style.display = "none";
+
+            const percent = Math.round((correctCount / activeQuestions.length) * 100);
+            document.getElementById('result-percent').textContent = percent + "%";
+            document.getElementById('result-detail').textContent =
+                `${correctCount} von ${activeQuestions.length} Fragen richtig beantwortet`;
+
+            resultBox.style.display = "block";
+            nextBtn.textContent = "Zurück zum Start";
+            nextBtn.style.display = "flex";
+        }
+
+        nextBtn.addEventListener('click', function() {
+            if (nextBtn.textContent === "Zurück zum Start") {
+                goHome();
+                return;
+            }
+
+            if (currentIndex < activeQuestions.length - 1) {
+                currentIndex++;
+                renderQuestion(currentIndex);
+            } else {
+                showFinalResult();
+            }
+        });
+    
+
+        // --- Start ---
+        setupCategoryNavigation();
+        renderTab(tabFromHash());
+    </script>
+
+</body>
+</html>
