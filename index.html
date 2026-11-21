@@ -4,6 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forst-Trainer</title>
+    <meta name="theme-color" content="#111613">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -40,7 +44,7 @@
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            padding: 36px 20px calc(24px + env(safe-area-inset-bottom)) 20px;
+            padding: 36px 20px calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom)) 20px;
         }
 #category-screen,
         #baumarten-screen {
@@ -49,7 +53,7 @@
             max-width: 420px;
             min-height: 100svh;
             flex-direction: column;
-            padding: 16px 20px calc(24px + env(safe-area-inset-bottom)) 20px;
+            padding: 16px 20px calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom)) 20px;
         }
 
         .screen-top {
@@ -425,9 +429,169 @@
                 max-height: 210px;
             }
         }
+
+        /* ===================================================
+           TAB-LEISTE (FOOTER)
+           Das SVG ist 393 x 84 groß, die Leiste skaliert mit der Breite.
+           =================================================== */
+        :root {
+            --app-w: min(100vw, 420px);
+            --tabbar-h: calc(var(--app-w) * 84 / 393);
+        }
+
+        .tabbar {
+            position: fixed;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: var(--app-w);
+            z-index: 50;
+        }
+
+        .tabbar-art {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 393 / 84;
+        }
+
+        .tabbar-art img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .tabbar-art img[hidden] {
+            display: none;
+        }
+
+        /* fünf gleich breite, unsichtbare Tippflächen über dem SVG */
+        .tabbar-links {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .tabbar-links a {
+            display: block;
+            border-radius: 12px;
+            color: inherit;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .tabbar-links a:focus-visible {
+            outline: 2px solid #6B9C7C;
+            outline-offset: -6px;
+        }
+
+        /* Platz unter der Leiste (iPhone Home-Indikator) */
+        .tabbar::after {
+            content: "";
+            display: block;
+            height: env(safe-area-inset-bottom);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Beschriftung nur für Screenreader (im SVG ist sie schon sichtbar) */
+        .tab-label {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+
+        /* Notfall: wenn die SVG-Dateien nicht gefunden werden, zeigen wir einfache Text-Tabs */
+        .tabbar.no-art .tabbar-art {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #2A362F;
+        }
+
+        .tabbar.no-art .tab-label {
+            position: static;
+            width: auto;
+            height: auto;
+            overflow: visible;
+            clip-path: none;
+        }
+
+        .tabbar.no-art .tabbar-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #9CA8A1;
+        }
+
+        .tabbar.no-art .tabbar-links a[aria-current="page"] {
+            color: #F2F5F3;
+            font-weight: 700;
+        }
+
+        /* Im Quiz blenden wir die Leiste aus: mehr Platz, kein versehentliches Verlassen */
+        body.in-quiz .tabbar {
+            display: none;
+        }
+
+        /* ===================================================
+           PLATZHALTER-SEITEN (Start, Übung, Wissen, Profil)
+           =================================================== */
+        .tab-placeholder {
+            display: none;
+            width: 100%;
+            max-width: 420px;
+            min-height: 100svh;
+            flex-direction: column;
+            padding: 36px 20px calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom)) 20px;
+        }
     </style>
 </head>
+
 <body>
+
+    <!-- SEITE: START (noch nicht gebaut) -->
+    <div id="page-start" class="tab-placeholder">
+        <!-- TODO: Startseite (Titel, Zitat, Buttons Fachwissen / Prüfungsmodus) -->
+        <div class="content-container">
+            <h1>Start</h1>
+            <p class="subtitle">Kommt bald</p>
+        </div>
+    </div>
+
+    <!-- SEITE: ÜBUNG (noch nicht gebaut) -->
+    <div id="page-uebung" class="tab-placeholder">
+        <!-- TODO: Übungsseite -->
+        <div class="content-container">
+            <h1>Übung</h1>
+            <p class="subtitle">Kommt bald</p>
+        </div>
+    </div>
+
+    <!-- SEITE: WISSEN (noch nicht gebaut) -->
+    <div id="page-wissen" class="tab-placeholder">
+        <!-- TODO: Wissensseite (Fachwissen lesen) -->
+        <div class="content-container">
+            <h1>Wissen</h1>
+            <p class="subtitle">Kommt bald</p>
+        </div>
+    </div>
+
+    <!-- SEITE: PROFIL (noch nicht gebaut) -->
+    <div id="page-profil" class="tab-placeholder">
+        <!-- TODO: Profilseite -->
+        <div class="content-container">
+            <h1>Profil</h1>
+            <p class="subtitle">Kommt bald</p>
+        </div>
+    </div>
+
 
     <!-- ECRAN 1: PAGINA DE START -->
     <div id="start-screen">
@@ -441,7 +605,7 @@
 <!-- ECRAN 1B: KATEGORIEN -->
     <div id="category-screen">
         <div class="screen-top">
-            <button id="cat-back-btn" class="back-btn" aria-label="Zurück"><</button>
+            <button id="cat-back-btn" class="back-btn" aria-label="Zurück">&lt;</button>
             <span style="width: 34px;"></span>
         </div>
 
@@ -465,7 +629,7 @@
     <!-- ECRAN 1C: BAUMARTEN & BESTIMMUNG -->
     <div id="baumarten-screen">
         <div class="screen-top">
-            <button id="baum-back-btn" class="back-btn" aria-label="Zurück"><</button>
+            <button id="baum-back-btn" class="back-btn" aria-label="Zurück">&lt;</button>
             <span style="width: 34px;"></span>
         </div>
 
@@ -515,6 +679,26 @@
             <button id="next-btn">Nächste Frage</button>
         </div>
     </div>
+
+    
+    <!-- TAB-LEISTE (FOOTER): pro Seite ein eigenes SVG, in dem der aktive Tab hervorgehoben ist.
+         Die SVG-Dateien müssen im Ordner img/ liegen. -->
+    <nav id="tabbar" class="tabbar" aria-label="Hauptnavigation">
+        <div class="tabbar-art">
+            <img data-tab="start"    src="img/Footer_Start_aktiv.svg"    alt="" hidden>
+            <img data-tab="uebung"   src="img/Footer_Uebung_aktiv.svg"   alt="" hidden>
+            <img data-tab="pruefung" src="img/Footer_Pruefung_aktiv.svg" alt="" hidden>
+            <img data-tab="wissen"   src="img/Footer_Wissen_aktiv.svg"   alt="" hidden>
+            <img data-tab="profil"   src="img/Footer_Profil_aktiv.svg"   alt="" hidden>
+            <div class="tabbar-links">
+                <a href="#start"    data-tab="start"><span class="tab-label">Start</span></a>
+                <a href="#uebung"   data-tab="uebung"><span class="tab-label">Übung</span></a>
+                <a href="#pruefung" data-tab="pruefung"><span class="tab-label">Prüfung</span></a>
+                <a href="#wissen"   data-tab="wissen"><span class="tab-label">Wissen</span></a>
+                <a href="#profil"   data-tab="profil"><span class="tab-label">Profil</span></a>
+            </div>
+        </div>
+    </nav>
 
     <script>
         const questions = [
@@ -1579,6 +1763,7 @@
 
         ];
 
+
         function shuffleArray(array) {
             const copy = [...array];
             for (let i = copy.length - 1; i > 0; i--) {
@@ -1588,19 +1773,23 @@
             return copy;
         }
 
+
         let activeQuestions = [];
         let currentIndex = 0;
         let correctCount = 0;
         let answered = false;
 
+        // --- Elemente der Seite ---
         const startScreen = document.getElementById('start-screen');
+        const categoryScreen = document.getElementById('category-screen');
+        const baumartenScreen = document.getElementById('baumarten-screen');
         const quizScreen = document.getElementById('quiz-screen');
         const startBtn = document.getElementById('start-btn');
         const closeBtn = document.getElementById('close-btn');
         const nextBtn = document.getElementById('next-btn');
         const resultBox = document.getElementById('result-box');
+        let categoryListenersAttached = false;
 
-       // 2. GOES IN <script>, RIGHT ABOVE function renderQuestion(index)
         function isTrueFalseOptions(options) {
             if (!Array.isArray(options) || options.length !== 2) return false;
             const texts = options.map(o => o.text.trim().toLowerCase());
@@ -1672,17 +1861,95 @@
             }
         }
 
-      const categoryScreen = document.getElementById('category-screen');
-        const baumartenScreen = document.getElementById('baumarten-screen');
-        let categoryListenersAttached = false;
 
-        function showScreen(targetScreen) {
-            startScreen.style.display = 'none';
-            if (categoryScreen) categoryScreen.style.display = 'none';
-            if (baumartenScreen) baumartenScreen.style.display = 'none';
-            quizScreen.style.display = 'none';
-            targetScreen.style.display = 'flex';
+        /* ===================================================
+           NAVIGATION MIT TAB-LEISTE (FOOTER)
+           5 Tabs: Start, Übung, Prüfung, Wissen, Profil.
+           Gebaut ist bisher nur "Prüfung" (Start-Screen, Kategorien, Baumarten, Quiz).
+           Die anderen Tabs zeigen eine Platzhalter-Seite "Kommt bald".
+           =================================================== */
+        const TABS = ['start', 'uebung', 'pruefung', 'wissen', 'profil'];
+        const DEFAULT_TAB = 'pruefung';   // Wenn die Startseite fertig ist: hier auf 'start' ändern
+
+        const tabbar = document.getElementById('tabbar');
+        const tabImages = tabbar.querySelectorAll('img[data-tab]');
+        const tabLinks = tabbar.querySelectorAll('a[data-tab]');
+        const placeholderPages = {
+            start: document.getElementById('page-start'),
+            uebung: document.getElementById('page-uebung'),
+            wissen: document.getElementById('page-wissen'),
+            profil: document.getElementById('page-profil')
+        };
+        const pruefungScreens = [startScreen, categoryScreen, baumartenScreen, quizScreen];
+
+        let activeTab = null;
+        let pruefungScreen = startScreen;   // merkt sich, wo man im Tab "Prüfung" zuletzt war
+
+        // Zeigt einen Tab und passt die Tab-Leiste an
+        function renderTab(tab) {
+            activeTab = tab;
+
+            // erst alles ausblenden ...
+            pruefungScreens.concat(Object.values(placeholderPages)).forEach(function(page) {
+                page.style.display = 'none';
+            });
+
+            // ... dann die richtige Seite zeigen
+            const page = (tab === 'pruefung') ? pruefungScreen : placeholderPages[tab];
+            page.style.display = 'flex';
+
+            // im Quiz keine Tab-Leiste
+            document.body.classList.toggle('in-quiz', page === quizScreen);
+
+            // Footer: das SVG mit dem aktiven Tab zeigen
+            tabImages.forEach(function(img) {
+                img.hidden = (img.dataset.tab !== tab);
+            });
+            tabLinks.forEach(function(link) {
+                if (link.dataset.tab === tab) {
+                    link.setAttribute('aria-current', 'page');
+                } else {
+                    link.removeAttribute('aria-current');
+                }
+            });
+
+            window.scrollTo(0, 0);
         }
+
+        // Wechsel zwischen den Screens innerhalb von "Prüfung"
+        function showScreen(targetScreen) {
+            pruefungScreen = targetScreen;
+            renderTab('pruefung');
+        }
+
+        function tabFromHash() {
+            const name = location.hash.replace('#', '');
+            return TABS.includes(name) ? name : DEFAULT_TAB;
+        }
+
+        // Anderer Tab: der Link ändert die Adresse (#start ...), hashchange zeigt dann die Seite
+        window.addEventListener('hashchange', function() {
+            renderTab(tabFromHash());
+        });
+
+        // Denselben Tab nochmal tippen: "Prüfung" springt zurück zur Prüfung-Startseite
+        tabLinks.forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                const tab = link.dataset.tab;
+                if (tab !== activeTab) return;
+                event.preventDefault();
+                if (tab === 'pruefung') pruefungScreen = startScreen;
+                renderTab(tab);
+            });
+        });
+
+        // Falls die SVG-Dateien fehlen: einfache Text-Tabs anzeigen
+        tabImages.forEach(function(img) {
+            img.addEventListener('error', function() {
+                tabbar.classList.add('no-art');
+                tabImages.forEach(function(other) { other.hidden = true; });
+            });
+        });
 
         function startFilteredQuiz(predicate) {
             const pool = questions.filter(predicate);
@@ -1761,20 +2028,15 @@
             });
         }
 
+
         startBtn.addEventListener('click', function() {
-            setupCategoryNavigation();
-            if (categoryScreen) {
-                showScreen(categoryScreen);
-            } else {
-                startFilteredQuiz(() => true);
-            }
+            showScreen(categoryScreen);
         });
 
         function goHome() {
-            quizScreen.style.display = 'none';
-            startScreen.style.display = 'flex';
             nextBtn.style.display = 'none';
             resultBox.style.display = 'none';
+            showScreen(startScreen);
         }
 
         closeBtn.addEventListener('click', goHome);
@@ -1827,6 +2089,11 @@
                 showFinalResult();
             }
         });
+    
+
+        // --- Start ---
+        setupCategoryNavigation();
+        renderTab(tabFromHash());
     </script>
 
 </body>
