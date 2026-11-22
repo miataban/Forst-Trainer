@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="utf-8">
+<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#111613">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Forst-Trainer">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="img/icon-192.png.img">
     <title>Forst-Trainer</title>
     <meta name="theme-color" content="#111613">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1759,7 +1764,22 @@
                         correct: false
                     }
                 ]
-            },
+            },{
+                 category: "baumarten",
+                 subCategory: ["knospen", "laubbäume"],
+                 title: "Was muss anstelle von “...” stehen?",
+                 image: "img/winter-linde-knospen-gefaerbt.jpg.webp",
+                 paragraphs: [
+                     "Die Farbe der Zweige und Knospen hängt auch bei der ... stark von Sonnenseite (links) und Schattenseite (rechts) ab.",
+                     "Die Knospen welches Baumes siehst du auf dem Bild?"
+                 ],
+                 options: [
+                     { text: "Eiche", correct: false },
+                     { text: "Winterlinde", correct: true },
+                     { text: "Bergahorn", correct: false },
+                    { text: "Spitzahorn", correct: false }
+                 ]
+             },
 
         ];
 
@@ -2094,6 +2114,11 @@
         // --- Start ---
         setupCategoryNavigation();
         renderTab(tabFromHash());
+           if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("sw.js").catch(() => {});
+            });
+        }
     </script>
 
 </body>
